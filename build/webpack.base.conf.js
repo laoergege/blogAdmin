@@ -7,6 +7,13 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
+const museUiThemePath = path.join(
+  __dirname,
+  '../node_modules',
+  'muse-ui',
+  'src/styles/themes/variables/default.less'
+)
+
 module.exports = {
   entry: {
     app: './src/main.js'
@@ -22,7 +29,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': resolve('src'),
+      'muse-components': 'muse-ui/src'
     }
   },
   module: {
@@ -31,6 +39,10 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
+      },
+      {
+        test: /muse-ui.src.*?js$/,
+        loader: 'babel-loader'
       },
       {
         test: /\.js$/,
