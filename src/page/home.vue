@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
-    <app-nav-drawer :open="openDrawer" @click="onOpen"/>
-    <div>
+    <app-nav-drawer :open="openDrawer"/>
+    <div :class = "{'nav-show': openDrawer}">
       <mu-appbar title="blog-admin">
         <mu-icon-button icon="menu" slot="left" />
       </mu-appbar>
@@ -49,12 +49,18 @@
 <script>
 import AppNavDrawer from '../components/AppNavDrawer';
 
+function isDesktop () {
+  return window.innerWidth > 993
+}
+
 export default {
   data() {
+    const desktop = isDesktop();
+
     return {
-      activeTab: 'tab1',
-      activeList: 'list1',
-      openDrawer: false
+      docked: desktop,
+      desktop: desktop,
+      openDrawer: desktop
     }
   },
   methods: {
@@ -94,6 +100,10 @@ export default {
   display: inline-block;
   width: calc(100% - 150px);
   margin: 0 auto;
+}
+
+.nav-show {
+  padding-left: 256px;
 }
 
 .tab {

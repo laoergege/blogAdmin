@@ -1,39 +1,50 @@
 <template>
-<div>
+  <div>
     <mu-drawer :open="open" :docked="docked" @close="toggle()">
+      <div class="title"></div>
+
       <mu-list @itemClick="docked ? '' : toggle()">
-        <mu-list-item title="Menu Item 1"/>
-        <mu-list-item title="Menu Item 2"/>
-        <mu-list-item title="Menu Item 3"/>
-        <mu-list-item v-if="docked" @click.native="open = false" title="Close"/>
+        <mu-list-item title="Menu Item 1" />
+        <mu-list-item title="Menu Item 2" />
+        <mu-list-item title="Menu Item 3" />
+        <mu-list-item v-if="docked" @click.native="open = false" title="Close" />
       </mu-list>
     </mu-drawer>
-</div>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'AppNavDrawer',
-  data () {
+  data() {
     return {
       docked: true
     }
   },
   props: {
-      open: {
-          type: Boolean,
-          default: false,
-          required: true
-      }
+    open: {
+      type: Boolean,
+      default: false,
+      required: true
+    }
   },
   methods: {
-    toggle (flag) {
+    toggle(flag) {
       this.open = !this.open
       this.docked = !flag
     }
   },
   updated() {
-      console.log(this.open)
+    console.log(this.open)
   }
 }
 </script>
+
+<style lang="less">
+@import "../../node_modules/muse-ui/less/vars.less"; // 默认基础的变量
+
+.title {
+  background-image: url('../assets/logo.png');
+  background-color: @backgroundColor
+}
+</style>
