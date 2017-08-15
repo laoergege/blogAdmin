@@ -7,6 +7,7 @@ import iconButton from 'muse-components/iconButton'
 import raisedButton from 'muse-components/raisedButton'
 import { col, row } from 'muse-components/grid'
 import drawer from 'muse-components/drawer'
+import avatar from 'muse-components/avatar'
 
 const comps = {
     [appBar.name]: appBar,
@@ -19,7 +20,8 @@ const comps = {
     [col.name]: col,
     [row.name]: row,
     [drawer.name]: drawer,
-    [raisedButton.name]: raisedButton
+    [raisedButton.name]: raisedButton,
+    [avatar.name]: avatar
 }
 
 export function registerComps(Vue) {

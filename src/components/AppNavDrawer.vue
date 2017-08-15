@@ -1,7 +1,7 @@
 <template>
   <div>
     <mu-drawer :open="open" :docked="docked" @close="toggle()">
-      <div class="title"></div>
+      <lys-host/>
 
       <mu-list @itemClick="docked ? '' : toggle()">
         <mu-list-item title="Menu Item 1" />
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import Host from './Host';
+
 export default {
   name: 'AppNavDrawer',
   data() {
@@ -34,17 +36,18 @@ export default {
       this.docked = !flag
     }
   },
-  updated() {
-    console.log(this.open)
+  components: {
+    'lys-host': Host
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import "../../node_modules/muse-ui/less/vars.less"; // 默认基础的变量
 
 .title {
   background-image: url('../assets/logo.png');
-  background-color: @backgroundColor
+  background-color: @backgroundColor;
+  height: 100px;
 }
 </style>
