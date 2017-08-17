@@ -3,8 +3,8 @@
     <lys-nav/>
     <div :class="{'nav-show': openDrawer && device_type == 2}">
       <div class="content">
-        <lys-list v-show="device_type != 0 || openList"/>
-        <lys-main v-show="device_type != 0 || !openList"/>
+        <lys-list v-show="device_type != 0 || openList" />
+        <lys-main v-show="device_type != 0 || !openList" />
       </div>
     </div>
   </div>
@@ -20,23 +20,25 @@ import {
   TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST
 } from '../store/mutation-types';
 
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+import "rxjs/add/operator/debounceTime";
+
 export default {
   created() {
     let type = getDeviceType();
     this.toggleDrawer(type < 2 ? false : true);
     this.changType(type);
 
-    window.addEventListener('resize', () => {
-      let type = getDeviceType();
-      this.changType(type);     
-
-      if(type != 2){
-        this.toggleDrawer(false);
-      }
-    })
+    // 监听 window resize, 节流
+    Observable.fromEvent(window,'resize')
+              .debounceTime(200)
+              .subscribe(() => {
+                this.resizeHandle();
+              })
   },
   computed: {
-    ...mapState({ 
+    ...mapState({
       openDrawer: 'openDrawer',
       device_type: 'device_type',
       openList: 'list_show'
@@ -48,14 +50,25 @@ export default {
     },
     ...mapMutations({
       changType: CHANGE_TYPE
-    })
+    }),
+    resizeHandle: function () {
+      let type = getDeviceType();
+      this.changType(type);
+
+      if (type != 2 && this.openDrawer) {
+        this.toggleDrawer(false);
+      }
+    }
   },
   components: {
     'lys-nav': Nav,
     'lys-list': List,
     'lys-main': Main
   },
-  store
+  store,
+  destroyed() {
+    window.removeEventListener('resize', this.resizeHandle);
+  }
 }
 </script>
 <style scoped>
@@ -81,7 +94,7 @@ export default {
 }
 
 .nav-show {
-    padding-left: 256px;    
+  padding-left: 256px;
 }
 
 .content {

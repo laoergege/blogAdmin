@@ -24,6 +24,7 @@ export default {
       this.$store.commit(TOGGLE_DRAWER)
     },
     toggleList: function () {
+      if(this.$store.state.device_type == 0)
       this.$store.commit(TOGGLE_LIST)
     }
   }

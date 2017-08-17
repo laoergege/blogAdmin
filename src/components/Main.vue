@@ -27,7 +27,8 @@ export default {
     name: 'main',
     methods: {
         toggleList: function () {
-            this.$store.commit(TOGGLE_LIST)
+            if(this.$store.state.device_type == 0)
+                this.$store.commit(TOGGLE_LIST);
         }
     }
 }
