@@ -25,17 +25,21 @@ import 'rxjs/add/observable/fromEvent';
 import "rxjs/add/operator/debounceTime";
 
 export default {
+  data() {
+    return {
+      subscription: null
+    }
+  },
   created() {
-    let type = getDeviceType();
-    this.toggleDrawer(type < 2 ? false : true);
-    this.changType(type);
+    // 初始渲染home主页时，控制nav显示
+    this.navHandle();
 
-    // 监听 window resize, 节流
-    Observable.fromEvent(window,'resize')
-              .debounceTime(200)
-              .subscribe(() => {
-                this.resizeHandle();
-              })
+    // 订阅  window resize事件, 并 节流 操作
+    this.subscription = Observable.fromEvent(window, 'resize')
+      .debounceTime(200)
+      .subscribe(() => {
+        this.resizeHandle();
+      })
   },
   computed: {
     ...mapState({
@@ -58,6 +62,12 @@ export default {
       if (type != 2 && this.openDrawer) {
         this.toggleDrawer(false);
       }
+      if (type == 2 && !this.openDrawer) {
+        this.toggleDrawer(true);
+      }
+    },
+    navHandle(){
+      this.resizeHandle();
     }
   },
   components: {
@@ -66,8 +76,9 @@ export default {
     'lys-main': Main
   },
   store,
-  destroyed() {
-    window.removeEventListener('resize', this.resizeHandle);
+  beforeDestroy() {
+    // 取消 window resize 订阅
+    this.subscription.unsubscribe();
   }
 }
 </script>

@@ -4,10 +4,13 @@ import icon from 'muse-components/icon'
 import subHeader from 'muse-components/subHeader'
 import contentBlock from 'muse-components/contentBlock'
 import iconButton from 'muse-components/iconButton'
+import flatButton from 'muse-components/flatButton'
 import raisedButton from 'muse-components/raisedButton'
 import { col, row } from 'muse-components/grid'
 import drawer from 'muse-components/drawer'
 import avatar from 'muse-components/avatar'
+import paper from 'muse-components/paper'
+import textField from 'muse-components/textField'
 
 const comps = {
     [appBar.name]: appBar,
@@ -21,7 +24,10 @@ const comps = {
     [row.name]: row,
     [drawer.name]: drawer,
     [raisedButton.name]: raisedButton,
-    [avatar.name]: avatar
+    [avatar.name]: avatar,
+    [paper.name]: paper,
+    [textField.name]: textField,
+    [flatButton.name]: flatButton
 }
 
 export function registerComps(Vue) {
