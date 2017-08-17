@@ -1,13 +1,13 @@
 <template>
   <div>
-    <mu-drawer :open="open" :docked="docked" @close="toggle()">
+    <mu-drawer :open="openDrawer" :docked="docked" @close="toggle()">
       <lys-host/>
 
       <mu-list @itemClick="docked ? '' : toggle()">
         <mu-list-item title="Menu Item 1" />
         <mu-list-item title="Menu Item 2" />
         <mu-list-item title="Menu Item 3" />
-        <mu-list-item v-if="docked" @click.native="open = false" title="Close" />
+        <mu-list-item v-if="docked" />
       </mu-list>
     </mu-drawer>
   </div>
@@ -15,29 +15,30 @@
 
 <script>
 import Host from './Host';
+import { mapState } from 'vuex';
+import {
+  TOGGLE_DRAWER
+} from '../store/mutation-types';
+
 
 export default {
   name: 'AppNavDrawer',
-  data() {
-    return {
-      docked: true
-    }
-  },
-  props: {
-    open: {
-      type: Boolean,
-      default: false,
-      required: true
-    }
-  },
-  methods: {
-    toggle(flag) {
-      this.open = !this.open
-      this.docked = !flag
+  computed: {
+    ...mapState({ 
+       openDrawer: 'openDrawer',
+      device_type: 'device_type'
+    }),
+    docked() {
+      return this.device_type == 2 ? true : false;
     }
   },
   components: {
     'lys-host': Host
+  },
+  methods: {
+     toggle: function () {
+      this.$store.commit(TOGGLE_DRAWER)
+    },
   }
 }
 </script>

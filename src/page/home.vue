@@ -1,10 +1,10 @@
 <template>
   <div class="layout">
-    <lys-nav :open="openDrawer" />
-    <div :class="{'nav-show': openDrawer}">
+    <lys-nav/>
+    <div :class="{'nav-show': openDrawer && device_type == 2}">
       <div class="content">
-        <lys-list/>
-        <lys-main/>
+        <lys-list v-show="device_type != 0 || openList"/>
+        <lys-main v-show="device_type != 0 || !openList"/>
       </div>
     </div>
   </div>
@@ -13,38 +13,49 @@
 import Nav from '../components/AppNavDrawer';
 import List from '../components/List';
 import Main from '../components/main';
-
-function isDesktop() {
-  return window.innerWidth > 993
-}
+import { getDeviceType } from '../util/util';
+import store from '../store/store';
+import { mapState, mapMutations } from 'vuex';
+import {
+  TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST
+} from '../store/mutation-types';
 
 export default {
-  data() {
-    const desktop = isDesktop();
+  created() {
+    let type = getDeviceType();
+    this.toggleDrawer(type < 2 ? false : true);
+    this.changType(type);
 
-    return {
-      docked: desktop,
-      desktop: desktop,
-      openDrawer: desktop
-    }
+    window.addEventListener('resize', () => {
+      let type = getDeviceType();
+      this.changType(type);     
+
+      if(type != 2){
+        this.toggleDrawer(false);
+      }
+    })
+  },
+  computed: {
+    ...mapState({ 
+      openDrawer: 'openDrawer',
+      device_type: 'device_type',
+      openList: 'list_show'
+    })
   },
   methods: {
-    handleTabChange(val) {
-      this.activeTab = val
+    toggleDrawer: function (change = undefined) {
+      this.$store.commit(TOGGLE_DRAWER, change)
     },
-    handleListChange(val) {
-      this.activeList = val
-    },
-    // 侧边导航栏 监听器
-    onOpenDrawer() {
-      this.openDrawer = this.openDrawer == true ? false : true;
-    }
+    ...mapMutations({
+      changType: CHANGE_TYPE
+    })
   },
   components: {
     'lys-nav': Nav,
     'lys-list': List,
     'lys-main': Main
-  }
+  },
+  store
 }
 </script>
 <style scoped>
@@ -70,13 +81,7 @@ export default {
 }
 
 .nav-show {
-  padding-left: 256px;
-}
-
-.tab {
-  margin: 0 auto;
-  width: 400px;
-  background-color: rgba(0, 0, 0, 0);
+    padding-left: 256px;    
 }
 
 .content {
@@ -86,18 +91,21 @@ export default {
 }
 
 .content-left {
-  width: 30%;
+  flex-basis: 30%;
   /* float: left; */
   background-color: white;
   margin-bottom: -4000px;
   padding-bottom: 4000px;
+  flex-grow: 1;
 }
 
 .content-right {
   width: 70%;
   display: inline-block;
   /* float: right; */
-  background-color: rgba(0, 0, 0, 0)
+  background-color: rgba(0, 0, 0, 0);
+  flex-basis: 70%;
+  flex-grow: 1
 }
 
 .breadcrumb {

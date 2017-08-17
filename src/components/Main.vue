@@ -1,7 +1,7 @@
 <template>
     <div class="content-right">
         <mu-appbar title="Vue 生命周期" titleClass="titleClass">
-            <mu-icon-button icon="arrow_back" slot="left" />
+            <mu-icon-button icon="arrow_back" slot="left" @click="toggleList"/>
         </mu-appbar>
         <div class="toolbar">
             <mu-icon-button tooltip="保存" icon="save" />
@@ -19,8 +19,17 @@
 </template>
 
 <script>
+import {
+  TOGGLE_LIST
+} from '../store/mutation-types';
+
 export default {
-    name: 'main'
+    name: 'main',
+    methods: {
+        toggleList: function () {
+            this.$store.commit(TOGGLE_LIST)
+        }
+    }
 }
 </script>
 
