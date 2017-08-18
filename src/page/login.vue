@@ -3,7 +3,7 @@
         <mu-appbar title="blogAdmin" :titleClass="['titleClass']" />
         <div class="content">
             <mu-paper class="login-paper" :zDepth="1">
-                <mu-avatar src="/static/logo.png" :size="64" />
+                <mu-avatar :src="avatar" :size="64" />
                 <br/>
                 <mu-text-field hintText="username" icon="person" />
                 <br/>
@@ -19,8 +19,15 @@
 </template>
 
 <script>
+import avatar from '@/assets/logo.png';
+
 export default {
-    name: 'login'
+    name: 'login',
+    data() {
+        return {
+            avatar: avatar
+        }
+    }
 }
 </script>
 
