@@ -1,5 +1,5 @@
 <template>
-    <div class="content-right">
+    <div class="content-right layout">
         <mu-appbar title="Vue 生命周期" titleClass="titleClass">
             <mu-icon-button icon="arrow_back" slot="left" @click="toggleList"/>
         </mu-appbar>
@@ -10,9 +10,8 @@
             <mu-icon-button tooltip="发布更新" icon="publish" />
         </div>
         <div class="body">
-            <mu-sub-header>阳光</mu-sub-header>
-            <mu-content-block>
-                散落在指尖的阳光，我试着轻轻抓住光影的踪迹，它却在眉宇间投下一片淡淡的阴影。调皮的阳光掀动了四月的心帘，温暖如约的歌声渐起。似乎在诉说着，我也可以在漆黑的角落里，找到阴影背后的阳光，找到阳光与阴影奏出和谐的旋律。我要用一颗敏感赤诚的心迎接每一缕滑过指尖的阳光！
+            <mu-content-block style="height:100%">
+                <editor></editor>
             </mu-content-block>
         </div>
     </div>
@@ -22,6 +21,7 @@
 import {
   TOGGLE_LIST
 } from '../store/mutation-types';
+import Editor from './Editor';
 
 export default {
     name: 'main',
@@ -30,11 +30,19 @@ export default {
             if(this.$store.state.device_type == 0)
                 this.$store.commit(TOGGLE_LIST);
         }
+    },
+    components: {
+        editor: Editor
     }
 }
 </script>
 
-<style>
+<style scoped>
+.layout{
+    display: flex;
+    flex-direction: column;
+}
+
 .toolbar {
     display: flex;
     justify-content: flex-end;
@@ -48,8 +56,8 @@ export default {
 .body {
     background-color: white;
     border-radius: 5px;
-    min-height: 500px;
-    margin: 0 20px;
+    flex-grow: 1;
+    margin: 0 20px 10px;
 }
 </style>
 

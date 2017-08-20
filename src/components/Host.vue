@@ -1,7 +1,7 @@
 <template>
     <div class="layout">
         <mu-content-block>
-            <mu-avatar :src="avatar" :size="68"/>
+            <mu-avatar :src="avatar" :size="96"/>
             <span>laoergege</span>
             <p>不要再玩了！</p>
         </mu-content-block>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import avatar from '@/assets/logo.png';
+import avatar from '@/assets/avatar.jpg';
 
 export default {
     name: 'host',
