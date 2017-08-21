@@ -6,5 +6,11 @@ export default {
     device_type: 2,
 
     // list 组件是否展示
-    list_show: true
+    list_show: true,
+
+    // editor
+    // 预览
+    preview: false,
+    // 全屏
+    fullscreen: false
 }

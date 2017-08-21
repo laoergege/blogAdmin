@@ -1,23 +1,37 @@
 import {
-    TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST
+    TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN
 } from './mutation-types';
 
 export default {
     [TOGGLE_DRAWER](state, ...change) {
-        if (change[0]) {
+        if (change[0] != null) {
             state.openDrawer = change[0];
         } else {
             state.openDrawer = state.openDrawer == true ? false : true;
         }
     },
-    [CHANGE_TYPE](state,type) {
+    [CHANGE_TYPE](state, type) {
         state.device_type = type;
     },
     [TOGGLE_LIST](state, ...change) {
-        if (change[0]) {
+        if (change[0] != null) {
             state.list_show = change[0];
         } else {
             state.list_show = state.list_show == true ? false : true;
+        }
+    },
+    [PREVIEW](state, ...change) {
+        if (change[0] != null) {
+            state.preview = change[0];
+        } else {
+            state.preview = state.preview == true ? false : true;
+        }
+    },
+    [FULLSCREEN](state, ...change) {
+        if (change[0] != null) {
+            state.fullscreen = change[0];
+        } else {
+            state.fullscreen = state.fullscreen == true ? false : true;
         }
     }
 }

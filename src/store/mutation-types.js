@@ -4,3 +4,7 @@ export const TOGGLE_DRAWER = 'toggleDrawer';
 export const CHANGE_TYPE = 'changeType';
 // 切换list
 export const TOGGLE_LIST = 'toggleList';
+// 预览文章
+export const PREVIEW = 'preview';
+// 全屏写作
+export const FULLSCREEN = 'fullscreen';

@@ -4,7 +4,7 @@
     <div :class="{'nav-show': openDrawer && device_type == 2}">
       <div class="content">
         <lys-list v-show="device_type != 0 || openList" />
-        <lys-main v-show="device_type != 0 || !openList" />
+        <lys-main v-show="device_type != 0 || !openList" :class="{preview: isPreview,fullscreen: isFullscreen}" />
       </div>
     </div>
   </div>
@@ -45,7 +45,9 @@ export default {
     ...mapState({
       openDrawer: 'openDrawer',
       device_type: 'device_type',
-      openList: 'list_show'
+      openList: 'list_show',
+      isPreview: 'preview',
+      isFullscreen: 'fullscreen'
     })
   },
   methods: {
@@ -62,11 +64,11 @@ export default {
       if (type != 2 && this.openDrawer) {
         this.toggleDrawer(false);
       }
-      if (type == 2 && !this.openDrawer) {
+      if (type == 2 && !this.openDrawer && !this.isPreview && !this.isFullscreen) {
         this.toggleDrawer(true);
       }
     },
-    navHandle(){
+    navHandle() {
       this.resizeHandle();
     }
   },
@@ -126,18 +128,24 @@ export default {
 .content-right {
   width: 70%;
   display: inline-block;
-  /* float: right; */
   background-color: rgba(0, 0, 0, 0);
   flex-basis: 70%;
   flex-grow: 1
 }
 
-.breadcrumb {
-  margin: 10px 0;
+.preview {
+  position: fixed;
+  width: 100% !important;
+  height: 100vh;
+  z-index: 100;  
+  background-color: rgb(236, 236, 236);  
 }
 
-.footer {
-  padding: 20px 0;
-  text-align: center;
+.fullscreen {
+  position: fixed;
+  width: 100% !important;
+  height: 100vh;
+  z-index: 100;  
+  background-color: rgb(236, 236, 236); 
 }
 </style>
