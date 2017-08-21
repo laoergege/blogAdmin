@@ -4,18 +4,18 @@
             <div class="toolbar">
                 <div style="margin: 0 auto 0 0;">
                     <mu-icon-button tooltip="图片" icon="image" />
-                    <mu-icon-button tooltip="撤销" icon="rotate_left" @click="revoke"/>
-                    <mu-icon-button tooltip="恢复" icon="rotate_right" @click="recovery"/>
+                    <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
+                    <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
                 </div>
 
                 <mu-icon-button tooltip="保存" icon="save" />
                 <mu-icon-button tooltip="分屏预览" icon="flip" @click="togglePreview" :class="{isActived: preview}" />
-                <mu-icon-button tooltip="全屏写作" icon="fullscreen" @click="toggleFullScr" :class="{isActived: fullscreen}"/>
+                <mu-icon-button tooltip="全屏写作" icon="fullscreen" @click="toggleFullScr" :class="{isActived: fullscreen}" />
                 <mu-icon-button tooltip="发布更新" icon="publish" />
             </div>
             <div class="body">
                 <mu-content-block>
-                    <textarea id="editor" v-model="value" ref="textarea"></textarea>
+                    <textarea id="editor" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo" @input="onInput"></textarea>
                 </mu-content-block>
             </div>
         </div>
@@ -25,7 +25,7 @@
             </mu-content-block>
         </div>
     </div>
-</template>
+</template>         
 
 <script scoped>
 import store from '../store/store';
@@ -34,23 +34,35 @@ import {
     PREVIEW
 } from '../store/mutation-types';
 import { debounceTime } from '../util/util.js';
-const showdown  = require('showdown');
+const showdown = require('showdown');
+const Undo = require('undo');
 
 export default {
     name: 'editor',
     mounted() {
-        // debounceTime(this.$refs.textarea,'change',200,() => {
-        //     this.html = this.converter.makeHtml(this.value);
-        // })
 
-       
     },
     data() {
         return {
             value: '',
             converter: new showdown.Converter(),
-            records: [],
-            recoveryVal: []
+            stack: new Undo.Stack(),
+            EditCommand: Undo.Command.extend({
+                constructor: function (textarea, oldValue, newValue) {
+                    this.textarea = textarea;
+                    this.oldValue = oldValue;
+                    this.newValue = newValue;
+                },
+                execute: function () {
+                },
+                undo: function () {
+                    this.textarea.html(this.oldValue);
+                },
+
+                redo: function () {
+                    this.textarea.html(this.newValue);
+                }
+            });
         }
     },
     methods: {
@@ -58,29 +70,30 @@ export default {
             togglePreview: 'preview',
             toggleFullScr: 'fullscreen'
         }),
-        revoke() {
-            if(this.records.length != 0 ){
-                this.recoveryVal.push(this.records.pop());
-                this.value = this.recoveryVal[this.recoveryVal.length - 1];
+        undo(e) {
+            if (this.flag != 0) {
+                this.value = this.recordes[--this.flag];
             }
         },
-        recovery() {
-             if(this.recoveryVal.length != 0
-             ){
-                 this.value = this.recoveryVal.pop();
-             }
-        }
-    },
-    watch: {
-        value: function (val, oldValue) {
-            this.records.push(val);
+        redo(e) {
+            if (this.flag < (this.recordes.length - 1)) {
+                this.value = this.recordes[++this.flag];
+            }
+        },
+        onInput() {
+            if (this.flag < (this.recordes.length - 1))
+                this.recordes[++this.flag] = this.value;
+            else {
+                this.recordes.push(this.value);
+                this.flag++;
+            }
         }
     },
     computed: {
         html() {
             return this.converter.makeHtml(this.value);
         },
-        ...mapState(['preview','fullscreen'])
+        ...mapState(['preview', 'fullscreen'])
     },
     store
 }
@@ -103,7 +116,7 @@ export default {
 
 .preview-area {
     flex-basis: 50%;
-    overflow: auto; 
+    overflow: auto;
     margin: 10px 10px;
 }
 
