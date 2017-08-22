@@ -15,7 +15,7 @@
             </div>
             <div class="body">
                 <mu-content-block>
-                    <textarea id="editor" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo" @input="onInput"></textarea>
+                    <textarea id="editor" v-model="value" @change="1" ref="textarea"></textarea>
                 </mu-content-block>
             </div>
         </div>
@@ -35,7 +35,7 @@ import {
 } from '../store/mutation-types';
 import { debounceTime } from '../util/util.js';
 const showdown = require('showdown');
-const Undo = require('undo');
+const UndoManager = require('undo-manager');
 
 export default {
     name: 'editor',
@@ -46,23 +46,8 @@ export default {
         return {
             value: '',
             converter: new showdown.Converter(),
-            stack: new Undo.Stack(),
-            EditCommand: Undo.Command.extend({
-                constructor: function (textarea, oldValue, newValue) {
-                    this.textarea = textarea;
-                    this.oldValue = oldValue;
-                    this.newValue = newValue;
-                },
-                execute: function () {
-                },
-                undo: function () {
-                    this.textarea.html(this.oldValue);
-                },
-
-                redo: function () {
-                    this.textarea.html(this.newValue);
-                }
-            });
+            undoManager: new UndoManager(),
+            flag: 1
         }
     },
     methods: {
@@ -70,23 +55,27 @@ export default {
             togglePreview: 'preview',
             toggleFullScr: 'fullscreen'
         }),
-        undo(e) {
-            if (this.flag != 0) {
-                this.value = this.recordes[--this.flag];
-            }
+        undo() {
+            this.undoManager.undo();
         },
-        redo(e) {
-            if (this.flag < (this.recordes.length - 1)) {
-                this.value = this.recordes[++this.flag];
-            }
-        },
-        onInput() {
-            if (this.flag < (this.recordes.length - 1))
-                this.recordes[++this.flag] = this.value;
-            else {
-                this.recordes.push(this.value);
-                this.flag++;
-            }
+        redo() {
+            this.undoManager.redo();
+        }
+    },
+    watch: {
+        value: function (val, oldVal) {
+            console.log(val.length > oldVal.length)
+            if(val.length > oldVal.length)
+                this.undoManager.add({
+                    undo: () => { 
+                        // this.$refs.textarea.value = oldVal;
+                        this.value = oldVal; 
+                    },
+                    redo: () => { 
+                        // this.$refs.textarea.value = val 
+                        this.value = val;
+                    }
+                });
         }
     },
     computed: {
