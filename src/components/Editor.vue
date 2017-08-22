@@ -15,7 +15,8 @@
             </div>
             <div class="body">
                 <mu-content-block>
-                    <textarea id="editor" v-model="value" @change="1" ref="textarea"></textarea>
+                    <textarea id="editor" v-model="value" ref="textarea"
+                        @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
                 </mu-content-block>
             </div>
         </div>
@@ -47,7 +48,7 @@ export default {
             value: '',
             converter: new showdown.Converter(),
             undoManager: new UndoManager(),
-            flag: 1
+            flag: ''
         }
     },
     methods: {
@@ -64,18 +65,17 @@ export default {
     },
     watch: {
         value: function (val, oldVal) {
-            console.log(val.length > oldVal.length)
-            if(val.length > oldVal.length)
+            if (val.length > this.flag.length) {
+                this.flag = val;
                 this.undoManager.add({
-                    undo: () => { 
-                        // this.$refs.textarea.value = oldVal;
-                        this.value = oldVal; 
+                    undo: () => {
+                        this.value = oldVal;
                     },
-                    redo: () => { 
-                        // this.$refs.textarea.value = val 
+                    redo: () => {
                         this.value = val;
                     }
                 });
+            }
         }
     },
     computed: {
