@@ -1,5 +1,6 @@
 import {
-    TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN
+    TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN,
+    LIST_TITLE
 } from './mutation-types';
 
 export default {
@@ -33,6 +34,9 @@ export default {
         } else {
             state.fullscreen = state.fullscreen == true ? false : true;
         }
+    },
+    [LIST_TITLE](state, title) {
+        state.list_title = title;
     }
 }
 

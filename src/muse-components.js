@@ -11,6 +11,7 @@ import drawer from 'muse-components/drawer'
 import avatar from 'muse-components/avatar'
 import paper from 'muse-components/paper'
 import textField from 'muse-components/textField'
+import badge from 'muse-components/badge'
 
 const comps = {
     [appBar.name]: appBar,
@@ -27,7 +28,8 @@ const comps = {
     [avatar.name]: avatar,
     [paper.name]: paper,
     [textField.name]: textField,
-    [flatButton.name]: flatButton
+    [flatButton.name]: flatButton,
+    [badge.name]: badge
 }
 
 export function registerComps(Vue) {

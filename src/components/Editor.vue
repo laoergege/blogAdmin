@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" :style="{'flex-direction':  device_type == 0 ? 'column' : 'row'}">
         <div class="editor-area">
             <div class="toolbar">
                 <div style="margin: 0 auto 0 0;">
@@ -15,14 +15,13 @@
             </div>
             <div class="body">
                 <mu-content-block>
-                    <textarea id="editor" v-model="value" ref="textarea"
-                        @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+                    <textarea id="editor" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
                 </mu-content-block>
             </div>
         </div>
-        <div class="preview-area body" v-show="preview">
+        <div class="preview-area body" v-if="preview">
             <mu-content-block>
-                <div v-html="html" class="modest" ref="preview"></div>
+                <div v-html="html" class="" ref="preview"></div>
             </mu-content-block>
         </div>
     </div>
@@ -35,6 +34,7 @@ import {
     PREVIEW
 } from '../store/mutation-types';
 import { debounceTime } from '../util/util.js';
+
 const showdown = require('showdown');
 const UndoManager = require('undo-manager');
 
@@ -82,7 +82,7 @@ export default {
         html() {
             return this.converter.makeHtml(this.value);
         },
-        ...mapState(['preview', 'fullscreen'])
+        ...mapState(['preview', 'fullscreen', 'device_type'])
     },
     store
 }
@@ -93,6 +93,8 @@ export default {
 .container {
     height: 100%;
     display: flex;
+    /* flex-wrap: wrap; */
+    /* flex-direction: column */
 }
 
 .editor-area {

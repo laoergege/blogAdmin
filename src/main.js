@@ -6,7 +6,7 @@ import router from './router'
 
 import 'muse-components/styles/base.less' // 加载基础的样式
 import './style.css' // 导入全局样式
-import './assets/css/modest.less'; // 导入 markdown 主题
+ // 导入 markdown 主题
 
 import { registerComps } from './muse-components'; //导入 muse-ui 组件 
 registerComps(Vue); // 注册 muse-ui 组件
