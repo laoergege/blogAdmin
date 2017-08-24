@@ -59,7 +59,9 @@ export default {
       this.$store.commit(TOGGLE_DRAWER)
     },
     changeTitle(title) {
-      this.$store.commit(LIST_TITLE,title)
+      this.$store.commit(LIST_TITLE, title);
+      if (this.device_type != 2)
+        this.toggle();
     }
   }
 }

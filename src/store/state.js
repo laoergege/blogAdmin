@@ -1,4 +1,10 @@
 export default {
+    // host
+    // 登录状态
+    islogin: false,
+    // host 信息
+    host: {},
+
     // 侧边栏 开关
     openDrawer: true,
 

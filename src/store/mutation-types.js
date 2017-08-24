@@ -13,3 +13,9 @@ export const LIST_TITLE = 'list_title'
 export const PREVIEW = 'preview';
 // 全屏写作
 export const FULLSCREEN = 'fullscreen';
+
+// host
+// 登录状态
+export const ISLOGIN = 'islogin';
+// host 信息
+export const HOST_INFO = 'host_info';

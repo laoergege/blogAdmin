@@ -2,11 +2,12 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
+
+import router from './router' // 导入 vue-router
 
 import 'muse-components/styles/base.less' // 加载基础的样式
 import './style.css' // 导入全局样式
- // 导入 markdown 主题
+// 导入 markdown 主题
 
 import { registerComps } from './muse-components'; //导入 muse-ui 组件 
 registerComps(Vue); // 注册 muse-ui 组件

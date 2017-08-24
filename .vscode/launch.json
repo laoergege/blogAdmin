@@ -2,18 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceRoot}"
+            "name": "Launch Program",
+            "program": "${workspaceRoot}/build/dev-server.js",
+            "cwd": "${workspaceRoot}",
+            "sourceMaps": true
         },
         {
-            "type": "chrome",
+            "type": "node",
             "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "webRoot": "${workspaceRoot}"
+            "name": "Attach to Process",
+            "port": 5858
         }
     ]
 }

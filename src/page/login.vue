@@ -5,14 +5,18 @@
             <mu-paper class="login-paper" :zDepth="2">
                 <mu-avatar :src="avatar" :size="96" />
                 <br/>
-                <mu-text-field hintText="username" icon="person" />
-                <br/>
-                <mu-text-field hintText="password" icon="vpn_key" />
-                <br/>
-                <div>
-                    <mu-flat-button label="forget password?" color="#bdbdbd"/>
-                    <mu-raised-button label="login" primary/>
-                </div>
+                <form novalidate>
+                    <mu-text-field name="name" hintText="username" :required="true" icon="person" v-model.trim="name.value" 
+                        :errorText="nameErr" @blur="onBlur($data.name)" />
+                    <br/>
+                    <mu-text-field name="pass" type="password" :required="true" hintText="password" icon="vpn_key" v-model.trim="pass.value" 
+                        :errorText="passErr" @blur="onBlur($data.pass)" />
+                    <br/>
+                    <div>
+                        <mu-flat-button label="forget password?" color="#bdbdbd" />
+                        <mu-raised-button label="login" primary @click="login" />
+                    </div>
+                </form>
             </mu-paper>
         </div>
     </div>
@@ -20,19 +24,73 @@
 
 <script>
 import avatar from '@/assets/avatar.jpg';
+import store from '@/store/store';
 
 export default {
     name: 'login',
     data() {
         return {
-            avatar: avatar
+            avatar: avatar,
+            name: { value: '', touched: false, valid: false },
+            pass: { value: '', touched: false, valid: false }
+        }
+    },
+    computed: {
+        nameErr() {
+            if (this.name.touched) {
+                if (this.name.value.trim().length != 0) {
+                    this.name.valid = true;
+                    return ''
+                } else {
+                    return '用户名不能为空';
+                }
+            }
+            else
+                return '';
+        },
+        passErr() {
+            if (this.pass.touched) {
+                if (this.pass.value.trim().length != 0) {
+                    this.pass.valid = true;
+                    return ''
+                } else {
+                    return '密码不能为空';
+                }
+            }
+            else
+                return '';
+        }
+    },
+    store,
+    methods: {
+        async login() {
+            if (this.name.valid && this.pass.valid) {
+                let result = await this.$store.dispatch('login', {
+                    name: this.name.value,
+                    pass: this.pass.value
+                });
+                
+                if (result)
+                    this.$router.push('/home');
+                else {
+                    this.reset();
+                }
+            }
+        },
+        onBlur(filed) {
+            console.log(1)
+            filed.touched = true;
+        },
+        reset() {
+            this.name = { value: '', touched: false };
+            this.pass = { value: '', touched: false };
         }
     }
 }
 </script>
 
 <style scoped>
-.layout{
+.layout {
     display: flex;
     flex-direction: column;
     height: 100vh;

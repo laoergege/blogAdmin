@@ -1,7 +1,8 @@
 import {
     TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN,
-    LIST_TITLE
+    LIST_TITLE, ISLOGIN, HOST_INFO
 } from './mutation-types';
+import Vue from 'vue';
 
 export default {
     [TOGGLE_DRAWER](state, ...change) {
@@ -37,6 +38,12 @@ export default {
     },
     [LIST_TITLE](state, title) {
         state.list_title = title;
+    },
+    [ISLOGIN](state, islogin) {
+        state.islogin = islogin;
+    },
+    [HOST_INFO](state, host) {
+        Vue.set(state, 'host', host);
     }
 }
 
