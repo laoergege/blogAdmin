@@ -19,3 +19,18 @@ export const FULLSCREEN = 'fullscreen';
 export const ISLOGIN = 'islogin';
 // host 信息
 export const HOST_INFO = 'host_info';
+
+// 文集
+export const INIT_BOOKS = 'init_books';
+//添加文集
+export const ADD_BOOK = 'add_book';
+//修改文集名
+export const MODIFY_BOOK = 'modify_book';
+//删除文集
+export const DELETE_BOOK = 'delete_book';
+// 添加文集 文章
+export const ADD_POSTS = 'add_posts'
+
+//main
+//改变 main title
+export const CHANGE_MAIN_TITLE = 'change_main_title';

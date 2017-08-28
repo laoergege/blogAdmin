@@ -8,9 +8,9 @@
           <mu-icon slot="left" value="notifications" />
           <mu-badge content="4" secondary slot="after" />
         </mu-list-item>
-        <mu-list-item title="文集" toggleNested :open="false">
+        <mu-list-item title="文集" toggleNested :open="false"  @click.native="changeTitle('文集')">
           <mu-icon slot="left" value="collections_bookmark" />
-          <mu-list-item slot="nested" :title="book" v-for="(book, index) in books" :key="index" @click.native="changeTitle(book)">
+          <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="changeTitle(book.bookname)">
             <mu-icon slot="left" value="book" />
           </mu-list-item>
         </mu-list-item>
@@ -27,11 +27,10 @@
 
 <script>
 import Host from './Host';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import {
   TOGGLE_DRAWER, LIST_TITLE
 } from '../store/mutation-types';
-
 
 export default {
   name: 'AppNavDrawer',
@@ -45,7 +44,8 @@ export default {
   computed: {
     ...mapState({
       openDrawer: 'openDrawer',
-      device_type: 'device_type'
+      device_type: 'device_type',
+      markbooks: 'markbooks'
     }),
     docked() {
       return this.device_type == 2 ? true : false;
@@ -62,7 +62,13 @@ export default {
       this.$store.commit(LIST_TITLE, title);
       if (this.device_type != 2)
         this.toggle();
-    }
+    },
+    ...mapActions({
+      getbooks: 'getBooks'
+    })
+  },
+  created() {
+      this.getbooks();
   }
 }
 </script>

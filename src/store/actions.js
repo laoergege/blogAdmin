@@ -1,7 +1,27 @@
 import {
-    TOGGLE_DRAWER, PREVIEW, FULLSCREEN, HOST_INFO
+    TOGGLE_DRAWER, PREVIEW, FULLSCREEN, HOST_INFO, INIT_BOOKS,
+    ADD_BOOK, MODIFY_BOOK, DELETE_BOOK, ADD_POSTS
 } from '../store/mutation-types';
 import _http from '../util/http';
+import config from '../config';
+import router from '../router';
+
+/**
+    * 获取 markbooks
+    * @param {*} param0 
+    */
+const getBooks = async ({ commit, state }) => {
+    try {
+        let res = await _http.get(config.markboos);
+
+        let books = res.data.data;
+
+        commit(INIT_BOOKS, books);
+    } catch (error) {
+        console.log(error);
+        router.push({ name: 'error' });
+    }
+};
 
 export default {
     preview({ commit, state }) {
@@ -48,6 +68,98 @@ export default {
             }
         } catch (error) {
             return false;
+        }
+    },
+
+    getBooks,
+
+    /**
+     * 添加文集
+     * @param {*} param0 
+     */
+    async addBook({ commit, state }, title) {
+        try {
+            let response = await _http.post(config.markboos, {
+                bookname: title
+            });
+
+            if (response.status == 200) {
+                commit(ADD_BOOK, response.data.data);
+                return true;
+            }
+        } catch (error) {
+            console.log(error);
+            router.push({ name: 'error' });
+        }
+    },
+
+    /**
+     * 修改文集名
+     * @param {*} param0 
+     * @param {*} book 
+     */
+    async modifyBook({ commit, state }, book) {
+        try {
+            let response = await _http.put(config.markboos, {
+                book: book
+            });
+
+            if (response.status == 200) {
+                commit(MODIFY_BOOK, response.data.data);
+                return true;
+            }
+        } catch (error) {
+            console.log(error);
+            router.push({ name: 'error' });
+        }
+    },
+
+    /**
+     * 删除文集
+     * @param {*} param0 
+     * @param {*} book 
+     */
+    async deleteBook({ commit, state }, bookID) {
+        try {
+            let response = await _http.delete(`${config.markboos}/${bookID}`)
+
+            if (response.status == 200) {
+                commit(DELETE_BOOK, bookID);
+                return true;
+            }
+        } catch (error) {
+            console.log(error);
+            router.push({ name: 'error' });
+        }
+    },
+
+    /**
+     * 获取文集所有文章
+     * @param {*} param0 
+     * @param {*} bookname 
+     */
+    async getArticles({ commit, state }, bn) {
+        if (state.markbooks.length == 0)
+            await getBooks({ commit, state });
+
+        try {
+            let bookID = '';
+            for ({ _id, bookname } of state.markbooks) {
+                if (bn == bookname) {
+                    bookID = _id;
+                    break;
+                }
+            }
+
+            let response = await _http.get(`${config.markboos}/${bookID}`);
+
+            if (response.status == 200) {
+                commit(ADD_POSTS, { bookname: bookname, posts: response.data.data });
+                return true;
+            }
+        } catch (error) {
+            console.log(error);
+            router.push({ name: 'error' });
         }
     }
 }

@@ -20,5 +20,13 @@ export default {
     // 预览
     preview: false,
     // 全屏
-    fullscreen: false
+    fullscreen: false,
+
+    // 文集
+    markbooks: [],
+    books: {},
+
+    //main
+    // title
+    mainTitle: ''
 }

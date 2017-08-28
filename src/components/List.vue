@@ -3,12 +3,7 @@
     <mu-appbar :title="list_title">
       <mu-icon-button icon="menu" slot="left" @click="toggleDrawer" />
     </mu-appbar>
-    <mu-list>
-      <mu-list-item title="Sent mail" value="list1" @click="toggleList">
-        <mu-icon slot="left" value="send" />
-      </mu-list-item>
-      </mu-list-item>
-    </mu-list>
+    <router-view name="left"/>
   </div>
 </template>
 

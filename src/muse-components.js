@@ -12,6 +12,9 @@ import avatar from 'muse-components/avatar'
 import paper from 'muse-components/paper'
 import textField from 'muse-components/textField'
 import badge from 'muse-components/badge'
+import iconMenu from 'muse-components/iconMenu'
+import {menuItem} from 'muse-components/menu'
+import dialog from 'muse-components/dialog'
 
 const comps = {
     [appBar.name]: appBar,
@@ -29,7 +32,10 @@ const comps = {
     [paper.name]: paper,
     [textField.name]: textField,
     [flatButton.name]: flatButton,
-    [badge.name]: badge
+    [badge.name]: badge,
+    [iconMenu.name]: iconMenu,
+    [menuItem.name]: menuItem,
+    [dialog.name]: dialog
 }
 
 export function registerComps(Vue) {

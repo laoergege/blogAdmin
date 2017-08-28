@@ -5,6 +5,9 @@ import Login from '@/page/login'
 import Editor from '@/components/Editor'
 import NotFound from '@/page/not-found'
 import store from '../store/store';
+import Err from '@/page/error';
+import BooksList from '@/components/BooksList';
+import PostsList from '@/components/PostsList';
 
 Vue.use(Router)
 
@@ -12,7 +15,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home/editor'
+      redirect: '/home/bookslist'
     },
     {
       path: '/home',
@@ -25,15 +28,34 @@ export default new Router({
             next();
           else
             next('/login');
-        }else{
+        } else {
           next('/login');
         }
       },
       children: [
         {
-          path: 'editor',
+          path: 'bookslist',
+          name: 'bookslist',
+          components: {
+            left: BooksList,
+            right: null
+          }
+        },
+        {
+          path: ':book',
+          name: 'book',
+          components: {
+            left: PostsList,
+            right: null
+          }
+        },
+        {
+          path: ':book/:article',
           name: 'editor',
-          component: Editor
+          components: {
+            left: PostsList,
+            right: Editor
+          }
         }
       ]
     },
@@ -42,6 +64,7 @@ export default new Router({
       name: 'login',
       component: Login
     },
-    { path: '*', component: NotFound }
+    { path: 'error', name: 'error', component: Err },
+    { path: '*',  alias: '/404', component: NotFound }
   ]
 })
