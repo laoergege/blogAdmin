@@ -40,6 +40,7 @@ export default {
       .subscribe(() => {
         this.resizeHandle();
       })
+
   },
   computed: {
     ...mapState({
@@ -51,13 +52,13 @@ export default {
     })
   },
   methods: {
-    toggleDrawer: function (change = undefined) {
+    toggleDrawer: function(change = undefined) {
       this.$store.commit(TOGGLE_DRAWER, change)
     },
     ...mapMutations({
       changType: CHANGE_TYPE
     }),
-    resizeHandle: function () {
+    resizeHandle: function() {
       let type = getDeviceType();
       this.changType(type);
 
@@ -137,15 +138,15 @@ export default {
   position: fixed;
   width: 100% !important;
   height: 100vh;
-  z-index: 100;  
-  background-color: rgb(236, 236, 236);  
+  z-index: 100;
+  background-color: rgb(236, 236, 236);
 }
 
 .fullscreen {
   position: fixed;
   width: 100% !important;
   height: 100vh;
-  z-index: 100;  
-  background-color: rgb(236, 236, 236); 
+  z-index: 100;
+  background-color: rgb(236, 236, 236);
 }
 </style>

@@ -8,10 +8,10 @@
                     <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
                 </div>
 
-                <mu-icon-button tooltip="保存" icon="save" />
+                <mu-icon-button tooltip="保存" icon="save" @click="save"/>
                 <mu-icon-button tooltip="分屏预览" icon="flip" @click="togglePreview" :class="{isActived: preview}" />
                 <mu-icon-button tooltip="全屏写作" icon="fullscreen" @click="toggleFullScr" :class="{isActived: fullscreen}" />
-                <mu-icon-button tooltip="发布更新" icon="publish" />
+                <mu-icon-button tooltip="发布更新" icon="publish" @click="release" />
             </div>
             <div class="body">
                 <mu-content-block>
@@ -21,7 +21,7 @@
         </div>
         <div class="preview-area body" v-if="preview">
             <mu-content-block>
-                <div v-html="html" class="" ref="preview"></div>
+                <div v-html="html" class="markdown-body" ref="preview"></div>
             </mu-content-block>
         </div>
     </div>
@@ -34,7 +34,10 @@ import {
     PREVIEW
 } from '../store/mutation-types';
 import { debounceTime } from '../util/util.js';
-
+import axios from 'axios';
+import config from '../config';
+import hljs from '../hljs.config';
+import _http from '../util/http';
 const showdown = require('showdown');
 const UndoManager = require('undo-manager');
 
@@ -61,10 +64,31 @@ export default {
         },
         redo() {
             this.undoManager.redo();
+        },
+        release() {
+            this.currentPosts.release = true;
+            this.currentPosts.wordCount = this.value.length;
+            this.currentPosts.content = this.value;
+
+            _http.post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                .then(
+                () => { alert('发布更新成功') },
+                () => { this.router.push({name: 'error'}) }
+            )
+        },
+        save() {
+            this.currentPosts.wordCount = this.value.length;
+            this.currentPosts.content = this.value;
+
+            _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                .then(
+                () => { alert('保存成功') },
+                () => { this.router.push({name: 'error'}) }
+            )
         }
     },
     watch: {
-        value: function (val, oldVal) {
+        value: function(val, oldVal) {
             if (val.length > this.flag.length) {
                 this.flag = val;
                 this.undoManager.add({
@@ -82,7 +106,22 @@ export default {
         html() {
             return this.converter.makeHtml(this.value);
         },
-        ...mapState(['preview', 'fullscreen', 'device_type'])
+        ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts'])
+    },
+    created() {
+        axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
+            baseURL: config.APIADDR,
+            responseType: 'text'
+        }).then((res) => { this.value = res.data })
+    },
+    updated() {
+        if (this.preview) {
+            // 语法高亮
+            let blocks = this.$refs.preview.querySelectorAll('pre code');
+            blocks.forEach((block) => {
+                hljs.highlightBlock(block)
+            });
+        }
     },
     store
 }

@@ -26,7 +26,7 @@ export default {
         }
     },
     created() {
-        if (this.mainTitle) {
+        if (!this.mainTitle) {
             let path = this.$route.fullPath.split('/');
             this.$store.commit(CHANGE_MAIN_TITLE, path[path.length - 1])
         }

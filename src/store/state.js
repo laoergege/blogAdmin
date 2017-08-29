@@ -8,7 +8,7 @@ export default {
     // 侧边栏 开关
     openDrawer: true,
 
-    // 设备类型
+    // 设备类型 0: 手机 1：平板 2：电脑
     device_type: 2,
 
     //list
@@ -22,9 +22,10 @@ export default {
     // 全屏
     fullscreen: false,
 
-    // 文集
+    // 文集 文章相关 state
     markbooks: [],
     books: {},
+    currentPosts: null,
 
     //main
     // title

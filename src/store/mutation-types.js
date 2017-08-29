@@ -20,7 +20,8 @@ export const ISLOGIN = 'islogin';
 // host 信息
 export const HOST_INFO = 'host_info';
 
-// 文集
+// 文集 和 文章 state 相关操作
+// 初始文集
 export const INIT_BOOKS = 'init_books';
 //添加文集
 export const ADD_BOOK = 'add_book';
@@ -29,7 +30,9 @@ export const MODIFY_BOOK = 'modify_book';
 //删除文集
 export const DELETE_BOOK = 'delete_book';
 // 添加文集 文章
-export const ADD_POSTS = 'add_posts'
+export const ADD_POSTS = 'add_posts';
+// 初始化当前文章
+export const INIT_POSTS = 'init_POST';
 
 //main
 //改变 main title

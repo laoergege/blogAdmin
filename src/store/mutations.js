@@ -1,7 +1,7 @@
 import {
     TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN,
     LIST_TITLE, ISLOGIN, HOST_INFO, INIT_BOOKS, ADD_BOOK, MODIFY_BOOK,
-    DELETE_BOOK, CHANGE_MAIN_TITLE, ADD_POSTS
+    DELETE_BOOK, CHANGE_MAIN_TITLE, ADD_POSTS, INIT_POSTS
 } from './mutation-types';
 import Vue from 'vue';
 
@@ -77,6 +77,10 @@ export default {
     [ADD_POSTS](state, book) {
         // state.books.set(book.bookname, book.posts);
         state.books = Object.assign({}, state.books, {[book.bookname]: book.posts});
+    },
+    // 初始化当前文章
+    [INIT_POSTS](state, posts) {
+        state.currentPosts = posts;
     },
 
     // mian

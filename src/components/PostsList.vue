@@ -5,7 +5,7 @@
                 <mu-icon slot="left" value="add" />
             </mu-list-item>
             <mu-list-item :title="post.title" v-for="(post, index) in book" :key="index" 
-                @click="goArtcle(post)">
+                @click="goArtcle(post,index)">
                 <mu-icon slot="left" value="book" />
                 <mu-icon-menu slot="right" icon="more_vert" @click.native="$event.stopPropagation()">
                     <mu-menu-item title="删除文章"  />
@@ -38,7 +38,7 @@
 
 <script>
 import {
-    LIST_TITLE, CHANGE_MAIN_TITLE
+    LIST_TITLE, CHANGE_MAIN_TITLE, TOGGLE_LIST, INIT_POSTS
 } from '../store/mutation-types';
 import { mapState, mapActions } from 'vuex';
 import store from '../store/store';
@@ -47,16 +47,21 @@ export default {
     name: 'postsList',
     computed: {
         ...mapState({
-            book: function(state) { return state.books[this.$route.params.book]}
+            book: function(state) { return state.books[this.$route.params.book]},
+            "device_type": "device_type" 
         })
     },
     methods: {
         ...mapActions({
             getArticles: 'getArticles'
         }),
-        goArtcle(post) {
+        goArtcle(post,index) {
             this.$router.push({name: 'editor', params: {book: this.$route.params.book, article: post.title }});
             this.$store.commit(CHANGE_MAIN_TITLE, post.title);
+            this.$store.commit(INIT_POSTS, post);
+
+            if(this.device_type == 0)
+                this.$store.commit(TOGGLE_LIST);
         }
     },
     async created() {
