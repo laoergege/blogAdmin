@@ -6,5 +6,7 @@ export default {
     APIADDR: addr,
 
     // markbooks
-    markboos: `${addr}/markbooks`
+    markboos: `${addr}/markbooks`,
+
+    uploadSize: 1 // 单位 MB
 }

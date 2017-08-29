@@ -1,3 +1,5 @@
+import config from "../config";
+
 /**
  * 判断设备类型
  */
@@ -48,4 +50,20 @@ export function debounceTime(target, event, time, fun) {
     return Observable.fromEvent(target, event)
         .debounceTime(time)
         .subscribe(fun)
+}
+
+/**
+ * 检测图片
+ * @param {*} file 
+ */
+export function testImg(file) {
+
+    if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
+        alert("请上传图片类型必须是.gif,jpeg,jpg,png中的一种");
+        return false;
+    } else if (file.size > config.uploadSize * 1024 * 1024) {
+        alert(`请上传小于 ${config.uploadSize} M 的图片`);
+        return false;
+    }
+    return true;
 }

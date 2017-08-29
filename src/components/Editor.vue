@@ -8,14 +8,17 @@
                     <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
                 </div>
 
-                <mu-icon-button tooltip="保存" icon="save" @click="save"/>
+                <mu-icon-button tooltip="保存" icon="save" @click="save" />
                 <mu-icon-button tooltip="分屏预览" icon="flip" @click="togglePreview" :class="{isActived: preview}" />
                 <mu-icon-button tooltip="全屏写作" icon="fullscreen" @click="toggleFullScr" :class="{isActived: fullscreen}" />
                 <mu-icon-button tooltip="发布更新" icon="publish" @click="release" />
             </div>
-            <div class="body">
+            <div class="body" :class="{dragover: dragover}" ref="dropzone" @dragover.prevent.stop="onDragover" @dragleave.prevent.stop="onDragleave" @dragenter.prevent.stop="onDragleave" @drop.prevent.stop="onDrop($event)">
                 <mu-content-block>
-                    <textarea id="editor" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+
+                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+                    <input hidden type="file" name="file" id="file" />
+
                 </mu-content-block>
             </div>
         </div>
@@ -33,13 +36,15 @@ import { mapState, mapActions } from 'vuex';
 import {
     PREVIEW
 } from '../store/mutation-types';
-import { debounceTime } from '../util/util.js';
+import { debounceTime, testImg } from '../util/util.js';
 import axios from 'axios';
 import config from '../config';
 import hljs from '../hljs.config';
 import _http from '../util/http';
 const showdown = require('showdown');
 const UndoManager = require('undo-manager');
+import '../assets/css/dropzone.min.css';
+import "../assets/js/dropzone.min.js";
 
 export default {
     name: 'editor',
@@ -51,7 +56,8 @@ export default {
             value: '',
             converter: new showdown.Converter(),
             undoManager: new UndoManager(),
-            flag: ''
+            flag: '',
+            dragover: false
         }
     },
     methods: {
@@ -73,8 +79,8 @@ export default {
             _http.post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                 .then(
                 () => { alert('发布更新成功') },
-                () => { this.router.push({name: 'error'}) }
-            )
+                () => { this.$router.push({name: 'error'}) }
+                )
         },
         save() {
             this.currentPosts.wordCount = this.value.length;
@@ -83,8 +89,36 @@ export default {
             _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                 .then(
                 () => { alert('保存成功') },
-                () => { this.router.push({name: 'error'}) }
-            )
+                () => { this.$router.push({name: 'error'}) }
+                )
+        },
+        onDragover() {
+            this.dragover = true;
+        },
+        onDragleave() {
+            this.dragover = false;
+        },
+        onDrop(e) {
+            this.dragover = false;
+
+            let file = e.dataTransfer.files[0];
+
+            if(testImg(file)){
+                let formdata = new FormData();
+                formdata.append('image', file);
+
+                let selectionStart = this.$refs.textarea.selectionStart;
+
+                let start = this.value.substr(0,selectionStart);
+                let end = this.value.substr(selectionStart);
+                
+                this.value = `${start}\n![image.png](image uploading......)\n${end}`;
+
+                _http.post('/upload/images', formdata).then(
+                    (res) => { this.value = `${start}\n![image.png](${config.APIADDR}/${res.data.data[0]})\n${end}`; },
+                    (error) => { this.$router.push({name: 'error'}) }
+                )
+            }
         }
     },
     watch: {
@@ -183,5 +217,9 @@ textarea {
 
 .isActived {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dragover {
+    border: 2px dashed #6a737d;
 }
 </style>
