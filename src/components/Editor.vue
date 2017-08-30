@@ -3,7 +3,7 @@
         <div class="editor-area">
             <div class="toolbar">
                 <div style="margin: 0 auto 0 0;">
-                    <mu-icon-button tooltip="图片" icon="image" />
+                    <mu-icon-button tooltip="图片拖动到编辑区自动上传" icon="image" />
                     <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
                     <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
                 </div>
@@ -16,7 +16,7 @@
             <div class="body" :class="{dragover: dragover}" ref="dropzone" @dragover.prevent.stop="onDragover" @dragleave.prevent.stop="onDragleave" @dragenter.prevent.stop="onDragleave" @drop.prevent.stop="onDrop($event)">
                 <mu-content-block>
 
-                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+                    <textarea :key="currentPosts._id" id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
                     <input hidden type="file" name="file" id="file" />
 
                 </mu-content-block>
@@ -79,7 +79,7 @@ export default {
             _http.post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                 .then(
                 () => { alert('发布更新成功') },
-                () => { this.$router.push({name: 'error'}) }
+                () => { this.$router.push({ name: 'error' }) }
                 )
         },
         save() {
@@ -88,9 +88,12 @@ export default {
 
             _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                 .then(
-                () => { alert('保存成功') },
-                () => { this.$router.push({name: 'error'}) }
+                () => { },
+                () => { this.$router.push({ name: 'error' }) }
                 )
+        },
+        autosave() {
+            this.save();
         },
         onDragover() {
             this.dragover = true;
@@ -103,22 +106,40 @@ export default {
 
             let file = e.dataTransfer.files[0];
 
-            if(testImg(file)){
+            if (testImg(file)) {
                 let formdata = new FormData();
                 formdata.append('image', file);
 
                 let selectionStart = this.$refs.textarea.selectionStart;
 
-                let start = this.value.substr(0,selectionStart);
+                let start = this.value.substr(0, selectionStart);
                 let end = this.value.substr(selectionStart);
-                
+
                 this.value = `${start}\n![image.png](image uploading......)\n${end}`;
 
                 _http.post('/upload/images', formdata).then(
                     (res) => { this.value = `${start}\n![image.png](${config.APIADDR}/${res.data.data[0]})\n${end}`; },
-                    (error) => { this.$router.push({name: 'error'}) }
+                    (error) => { this.$router.push({ name: 'error' }) }
                 )
             }
+        },
+        getContent() {
+            axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
+                baseURL: config.APIADDR,
+                responseType: 'text'
+            }).then((res) => {
+                /**
+                 * 本地存储 与 远程存储 比较版本
+                 */
+                if (res.data == localStorage.getItem(this.currentPosts._id))
+                    this.value = res.data;
+                else {
+                    this.value = localStorage.getItem(this.currentPosts._id);
+                }
+            });
+        },
+        onRefresh() {
+            this.autosave();
         }
     },
     watch: {
@@ -133,7 +154,15 @@ export default {
                         this.value = val;
                     }
                 });
-            }
+            };
+            // 本地存储
+            localStorage.setItem(this.currentPosts._id, this.value);
+        },
+        "$route"() {
+            // 切换文章时， 自动保存
+            this.autosave();
+            // 请求 新的文章内容
+            this.getContent();
         }
     },
     computed: {
@@ -143,10 +172,11 @@ export default {
         ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts'])
     },
     created() {
-        axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
-            baseURL: config.APIADDR,
-            responseType: 'text'
-        }).then((res) => { this.value = res.data })
+        // 获取 文章 内容
+        this.getContent();
+
+        // 当用户离开或刷新页面时自动保存编辑内容
+        window.addEventListener("beforeunload", this.onRefresh)
     },
     updated() {
         if (this.preview) {
@@ -156,6 +186,16 @@ export default {
                 hljs.highlightBlock(block)
             });
         }
+    },
+    beforeDestroy() {
+        window.removeEventListener("beforeunload", this.onRefresh);
+    },
+    /******* 监听 该编辑器组件的路由变化 自动保存编辑内容   **/
+    beforeRouteLeave() {
+        // 切换文章时， 自动保存
+        this.autosave();
+        // 请求 新的文章内容
+        this.getContent();
     },
     store
 }

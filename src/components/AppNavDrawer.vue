@@ -68,7 +68,7 @@ export default {
     }),
     goBook(bookname) {
       this.changeTitle(bookname);
-      this.$router.push({ path: bookname });
+      this.$router.push({name: 'book', params: {book: bookname}});
     }
   },
   created() {
