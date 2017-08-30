@@ -80,8 +80,11 @@ export default {
     // 添加文集 文章
     [ADD_POSTS](state, {bookname, posts}) {
         // state.books.set(book.bookname, book.posts);
-        state.books[bookname].push(posts);
-        state.books = Object.assign({}, state.books);
+        // if(state.books[bookname].length == 0){
+            state.books[bookname].push(posts);
+            state.books = Object.assign({}, state.books);
+        // }
+           
     },
     // 初始化当前文章
     [INIT_POSTS](state, posts) {

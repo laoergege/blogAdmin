@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :key="this.$route.params.book">
         <mu-list>
             <mu-list-item title="新建文章" @click="onDialogFORnew">
                 <mu-icon slot="left" value="add" />
@@ -27,7 +27,7 @@
         </mu-dialog>
 
         <mu-dialog :open="dialogFORModify" title="修改文章名称" @close="close">
-            <mu-text-field icon="book" :errorText="errorText" @input="onInput($event)" v-model="target.title"/><br/>
+            <mu-text-field icon="book" :errorText="errorText" @input="onInput($event)" v-model="target.title" /><br/>
 
             <mu-flat-button slot="actions" @click="close" primary label="取消" />
             <mu-flat-button slot="actions" primary @click="onSubmitFORname" label="确定" />
@@ -78,7 +78,8 @@ export default {
             getArticles: 'getArticles'
         }),
         goArtcle(post, index) {
-            this.$router.push({ name: 'editor', params: { book: this.$route.params.book, article: post.title } });
+            // this.$router.push({ name: 'editor', params: { book: this.$route.params.book, article: post.title } });
+            this.$router.push({path:`/home/${this.$route.params.book}/${post.title}`});
             this.$store.commit(CHANGE_MAIN_TITLE, post.title);
             this.$store.commit(INIT_POSTS, post);
 
@@ -157,6 +158,12 @@ export default {
                     () => { this.$router.push({ name: 'error' }) }
                     )
             }
+        }
+    },
+    watch: {
+        async '$route'() {  
+            if (this.book.length == 0)        
+             await this.getArticles(this.$route.params.book)          
         }
     },
     async created() {

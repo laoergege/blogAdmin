@@ -16,7 +16,7 @@
             <div class="body" :class="{dragover: dragover}" ref="dropzone" @dragover.prevent.stop="onDragover" @dragleave.prevent.stop="onDragleave" @dragenter.prevent.stop="onDragleave" @drop.prevent.stop="onDrop($event)">
                 <mu-content-block>
 
-                    <textarea :key="currentPosts._id" id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
                     <input hidden type="file" name="file" id="file" />
 
                 </mu-content-block>
@@ -83,14 +83,16 @@ export default {
                 )
         },
         save() {
-            this.currentPosts.wordCount = this.value.length;
-            this.currentPosts.content = this.value;
+            if (this.currentPosts) {
+                this.currentPosts.wordCount = this.value.length;
+                this.currentPosts.content = this.value;
 
-            _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
-                .then(
-                () => { },
-                () => { this.$router.push({ name: 'error' }) }
-                )
+                _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                    .then(
+                    () => { },
+                    () => { this.$router.push({ name: 'error' }) }
+                    )
+            }
         },
         autosave() {
             this.save();
@@ -124,19 +126,21 @@ export default {
             }
         },
         getContent() {
-            axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
-                baseURL: config.APIADDR,
-                responseType: 'text'
-            }).then((res) => {
-                /**
-                 * 本地存储 与 远程存储 比较版本
-                 */
-                if (res.data == localStorage.getItem(this.currentPosts._id))
-                    this.value = res.data;
-                else {
-                    this.value = localStorage.getItem(this.currentPosts._id);
-                }
-            });
+            if (this.currentPosts) {
+                axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
+                    baseURL: config.APIADDR,
+                    responseType: 'text'
+                }).then((res) => {
+                    /**
+                     * 本地存储 与 远程存储 比较版本
+                     */
+                    if (res.data == localStorage.getItem(this.currentPosts._id))
+                        this.value = res.data;
+                    else {
+                        this.value = localStorage.getItem(this.currentPosts._id);
+                    }
+                });
+            }
         },
         onRefresh() {
             this.autosave();

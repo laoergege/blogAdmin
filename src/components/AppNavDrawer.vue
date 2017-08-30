@@ -45,7 +45,8 @@ export default {
     ...mapState({
       openDrawer: 'openDrawer',
       device_type: 'device_type',
-      markbooks: 'markbooks'
+      markbooks: 'markbooks',
+      currentPosts: 'currentPosts'
     }),
     docked() {
       return this.device_type == 2 ? true : false;
@@ -68,7 +69,15 @@ export default {
     }),
     goBook(bookname) {
       this.changeTitle(bookname);
-      this.$router.push({name: 'book', params: {book: bookname}});
+     
+
+      // this.$router.push({name: 'book', params: {book: bookname}})
+
+      this.$router.push({path: `/home/${bookname}/all`})
+
+      // window.location.hash = `/home/${bookname}/all`
+
+      
     }
   },
   created() {

@@ -43,19 +43,15 @@ export default new Router({
         },
         {
           path: ':book',
-          name: 'book',
-          components: {
-            left: PostsList,
-            right: null
-          }
-        },
-        {
-          path: ':book/:article',
           name: 'editor',
           components: {
             left: PostsList,
             right: Editor
-          }
+          },
+          children: [
+            {path: ':article'},
+            {path: 'all'}
+          ]
         }
       ]
     },
