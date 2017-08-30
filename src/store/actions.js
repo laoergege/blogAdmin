@@ -17,6 +17,8 @@ const getBooks = async ({ commit, state }) => {
         let books = res.data.data;
 
         commit(INIT_BOOKS, books);
+
+        return books;
     } catch (error) {
         console.log(error);
         router.push({ name: 'error' });
@@ -154,7 +156,9 @@ export default {
             let response = await _http.get(`${config.markboos}/${bookID}`);
 
             if (response.status == 200) {
-                commit(ADD_POSTS, { bookname: bookname, posts: response.data.data });
+                for(let posts of response.data.data){
+                    commit(ADD_POSTS, { bookname: bookname, posts: posts });
+                }
                 return true;
             }
         } catch (error) {

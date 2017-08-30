@@ -8,9 +8,9 @@
           <mu-icon slot="left" value="notifications" />
           <mu-badge content="4" secondary slot="after" />
         </mu-list-item>
-        <mu-list-item title="文集" toggleNested :open="false"  @click.native="changeTitle('文集')">
+        <mu-list-item title="文集" toggleNested :open="false">
           <mu-icon slot="left" value="collections_bookmark" />
-          <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="changeTitle(book.bookname)">
+          <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="goBook(book.bookname)">
             <mu-icon slot="left" value="book" />
           </mu-list-item>
         </mu-list-item>
@@ -55,7 +55,7 @@ export default {
     'lys-host': Host
   },
   methods: {
-    toggle: function () {
+    toggle: function() {
       this.$store.commit(TOGGLE_DRAWER)
     },
     changeTitle(title) {
@@ -65,10 +65,14 @@ export default {
     },
     ...mapActions({
       getbooks: 'getBooks'
-    })
+    }),
+    goBook(bookname) {
+      this.changeTitle(bookname);
+      this.$router.push({ path: bookname });
+    }
   },
   created() {
-      this.getbooks();
+    this.getbooks();
   }
 }
 </script>

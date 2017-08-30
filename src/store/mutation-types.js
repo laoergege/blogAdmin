@@ -33,6 +33,10 @@ export const DELETE_BOOK = 'delete_book';
 export const ADD_POSTS = 'add_posts';
 // 初始化当前文章
 export const INIT_POSTS = 'init_POST';
+// 修改 文章对象
+export const MODIFY_POSTS = "modify_posts";
+// 删除 文集中的文章
+export const DELETE_POSTS = 'delete_posts';
 
 //main
 //改变 main title

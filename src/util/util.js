@@ -67,3 +67,17 @@ export function testImg(file) {
     }
     return true;
 }
+
+/**
+ * 获取 当前list组件是哪个 文集
+ * @param {*} state 
+ */
+export const current_book = state => {
+    let book = window.location.hash.split('/')[2];
+    for(let {_id, bookname} of state.markbooks){
+        if(book == bookname){
+            book = _id;
+        }
+    };
+    return book;
+}

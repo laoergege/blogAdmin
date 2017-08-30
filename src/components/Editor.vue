@@ -208,6 +208,7 @@ export default {
     resize: none;
     font-family: Roboto, Lato, sans-serif;
     font-size: 18px;
+    overflow-x: hidden;
 }
 
 textarea {

@@ -1,7 +1,8 @@
 import {
     TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN,
     LIST_TITLE, ISLOGIN, HOST_INFO, INIT_BOOKS, ADD_BOOK, MODIFY_BOOK,
-    DELETE_BOOK, CHANGE_MAIN_TITLE, ADD_POSTS, INIT_POSTS
+    DELETE_BOOK, CHANGE_MAIN_TITLE, ADD_POSTS, INIT_POSTS, MODIFY_POSTS,
+    DELETE_POSTS
 } from './mutation-types';
 import Vue from 'vue';
 
@@ -50,6 +51,9 @@ export default {
     //文集操作
     [INIT_BOOKS](state, books) {
         state.markbooks = books;
+        for(let book of books) {
+            state.books[book.bookname] = [];
+        }
     },
     //添加文集
     [ADD_BOOK](state, book) {
@@ -74,13 +78,25 @@ export default {
         state.markbooks.splice(i, 1);
     },
     // 添加文集 文章
-    [ADD_POSTS](state, book) {
+    [ADD_POSTS](state, {bookname, posts}) {
         // state.books.set(book.bookname, book.posts);
-        state.books = Object.assign({}, state.books, {[book.bookname]: book.posts});
+        state.books[bookname].push(posts);
+        state.books = Object.assign({}, state.books);
     },
     // 初始化当前文章
     [INIT_POSTS](state, posts) {
         state.currentPosts = posts;
+    },
+    // 修改 文章对象
+    [MODIFY_POSTS](state, {key, value}){
+        Vue.set(state.currentPosts, key, value);
+    },
+    // 删除 文集中的文章
+    [DELETE_POSTS](state, {bookname, index}) {
+        // state.books[bookname].push(posts);
+        // state.books = Object.assign({}, state.books);
+        state.books[bookname].splice(index, 1);
+        state.books = Object.assign({}, state.books);
     },
 
     // mian
