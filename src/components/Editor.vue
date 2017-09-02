@@ -16,7 +16,7 @@
             <div class="body" :class="{dragover: dragover}" ref="dropzone" @dragover.prevent.stop="onDragover" @dragleave.prevent.stop="onDragleave" @dragenter.prevent.stop="onDragleave" @drop.prevent.stop="onDrop($event)">
                 <mu-content-block>
 
-                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.ctrl.90="undo" @keyup.ctrl.89="redo"></textarea>
+                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.prevent.stop.ctrl.90="undo" @keyup.prevent.stop.ctrl.89="redo"></textarea>
                     <input hidden type="file" name="file" id="file" />
 
                 </mu-content-block>
@@ -83,7 +83,7 @@ export default {
                 )
         },
         save() {
-            if (this.currentPosts) {
+            if (this.currentPosts && this.value) {
                 this.currentPosts.wordCount = this.value.length;
                 this.currentPosts.content = this.value;
 
@@ -148,7 +148,8 @@ export default {
     },
     watch: {
         value: function(val, oldVal) {
-            if (val.length > this.flag.length) {
+            (val)
+            if ( (val) && (val.length > this.flag.length)) {
                 this.flag = val;
                 this.undoManager.add({
                     undo: () => {
@@ -158,7 +159,9 @@ export default {
                         this.value = val;
                     }
                 });
-            };
+            }else{
+                val = ''
+            }
             // 本地存储
             localStorage.setItem(this.currentPosts._id, this.value);
         },
@@ -167,6 +170,8 @@ export default {
             this.autosave();
             // 请求 新的文章内容
             this.getContent();
+            // 清楚 储存的操作状态
+            this.undoManager.clear();
         }
     },
     computed: {
@@ -176,6 +181,8 @@ export default {
         ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts'])
     },
     created() {
+         // 清楚 储存的操作状态
+        this.undoManager.clear();
         // 获取 文章 内容
         this.getContent();
 

@@ -1,5 +1,5 @@
  // api 服务器地址
-const addr =  'http://localhost:3000';
+const addr =  process.env.API_ROOT;
 
 export default {
     // api 服务器地址

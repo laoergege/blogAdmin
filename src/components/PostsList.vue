@@ -79,7 +79,7 @@ export default {
         }),
         goArtcle(post, index) {
             // this.$router.push({ name: 'editor', params: { book: this.$route.params.book, article: post.title } });
-            this.$router.push({path:`/home/${this.$route.params.book}/${post.title}`});
+            this.$router.push({ path: `/home/${this.$route.params.book}/${post.title}` });
             this.$store.commit(CHANGE_MAIN_TITLE, post.title);
             this.$store.commit(INIT_POSTS, post);
 
@@ -93,16 +93,18 @@ export default {
             this.target = t;
             this.index = 10000;
             this.errorText = '';
+            this.$store.commit(INIT_POSTS, null);
         },
         onDialogFORnew() {
             this.dialogFORnew = true;
 
-            let newposts = {
+             let newposts = {
                 title: '',
                 directory: `/books/${this.$route.params.book}`,
                 release: false,
                 bookID: this.current_book,
-                content: ''
+                content: '',
+                create_at: Date.now()
             }
 
             this.$store.commit(INIT_POSTS, newposts);
@@ -119,10 +121,12 @@ export default {
                 this.errorText = '不能为空';
             else {
                 this.errorText = '';
-                this.$store.commit(MODIFY_POSTS, { key: 'title', value: value })
+                if(this.currentPosts)
+                    this.$store.commit(MODIFY_POSTS, { key: 'title', value: value })
             }
         },
         onSubmitForNew() {
+
             if (!this.errorText) {
                 _http.post(`/markbooks/${this.current_book}`, this.currentPosts)
                     .then(
@@ -161,16 +165,16 @@ export default {
         }
     },
     watch: {
-        async '$route'() {  
-            if (this.book.length == 0)        
-             await this.getArticles(this.$route.params.book)          
+        async '$route'() {
+            if (this.book.length == 0)
+                await this.getArticles(this.$route.params.book)
         }
     },
     async created() {
         this.$store.commit(LIST_TITLE, this.$route.params.book);
 
         if (this.book.length == 0) {
-            console.log(1)
+            (1)
             await this.getArticles(this.$route.params.book)
         }
     },

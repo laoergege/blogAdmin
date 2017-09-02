@@ -20,7 +20,6 @@ const getBooks = async ({ commit, state }) => {
 
         return books;
     } catch (error) {
-        console.log(error);
         router.push({ name: 'error' });
     }
 };
@@ -46,15 +45,16 @@ export default {
             });
 
             let data = response.data.data;
+        
+            //保存 token
+            localStorage.setItem('token', data.token);
+            // 保存 host 信息
+            commit(HOST_INFO, data.host);
 
-            if (response.status == 200) {
-                //保存 token
-                localStorage.setItem('token', data.token);
-                // 保存 host 信息
-                commit(HOST_INFO, data.host);
+            state.islogin = true;
 
-                return true;
-            }
+            return true;
+            
         } catch (error) {
             return false;
         }
@@ -90,7 +90,7 @@ export default {
                 return true;
             }
         } catch (error) {
-            console.log(error);
+            (error);
             router.push({ name: 'error' });
         }
     },
@@ -111,7 +111,7 @@ export default {
                 return true;
             }
         } catch (error) {
-            console.log(error);
+            (error);
             router.push({ name: 'error' });
         }
     },
@@ -130,7 +130,7 @@ export default {
                 return true;
             }
         } catch (error) {
-            console.log(error);
+            (error);
             router.push({ name: 'error' });
         }
     },
@@ -141,17 +141,17 @@ export default {
      * @param {*} bookname 
      */
     async getArticles({ commit, state }, bn) {
-        if (state.markbooks.length == 0)
-            await getBooks({ commit, state });
+        // if (state.markbooks.length == 0)
+        //     await getBooks({ commit, state });
 
         try {
-            let bookID = '';
-            for ({ _id, bookname } of state.markbooks) {
-                if (bn == bookname) {
-                    bookID = _id;
-                    break;
-                }
-            }
+        //     let bookID = '';
+        //     for ({ _id, bookname } of state.markbooks) {
+        //         if (bn == bookname) {
+        //             bookID = _id;
+        //             break;
+        //         }
+        //     }
 
             let response = await _http.get(`${config.markboos}/${bookID}`);
 
@@ -162,7 +162,7 @@ export default {
                 return true;
             }
         } catch (error) {
-            console.log(error);
+            (error);
             router.push({ name: 'error' });
         }
     }

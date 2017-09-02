@@ -5,8 +5,9 @@ import App from './App'
 
 import router from './router' // 导入 vue-router
 
-import 'muse-components/styles/base.less' // 加载基础的样式
 import './style.css' // 导入全局样式
+import './assets/css/iconfont/material-icons.css' // 导入 material-icons
+import 'muse-components/styles/base.less' // 加载基础的样式
 import "github-markdown-css/github-markdown.css"  // 导入 markdown 主题
 
 // import "jquery";  // 导入 jq

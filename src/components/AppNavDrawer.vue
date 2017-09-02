@@ -10,6 +10,9 @@
         </mu-list-item>
         <mu-list-item title="文集" toggleNested :open="false">
           <mu-icon slot="left" value="collections_bookmark" />
+          <mu-list-item slot="nested" title="新建文集" @click="$router.push({name: 'bookslist'})">
+            <mu-icon slot="left" value="add" />
+          </mu-list-item>
           <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="goBook(book.bookname)">
             <mu-icon slot="left" value="book" />
           </mu-list-item>
@@ -31,6 +34,8 @@ import { mapState, mapMutations, mapActions } from 'vuex';
 import {
   TOGGLE_DRAWER, LIST_TITLE
 } from '../store/mutation-types';
+import _http from "../util/http"
+import config from "../config"
 
 export default {
   name: 'AppNavDrawer',
@@ -69,19 +74,15 @@ export default {
     }),
     goBook(bookname) {
       this.changeTitle(bookname);
-     
 
-      // this.$router.push({name: 'book', params: {book: bookname}})
-
-      this.$router.push({path: `/home/${bookname}/all`})
-
-      // window.location.hash = `/home/${bookname}/all`
-
-      
+      this.$router.push({ path: `/home/${bookname}/all` })
     }
   },
   created() {
-    this.getbooks();
+    // this.getbooks();
+    setTimeout(() => {
+      this.getbooks();
+    }, 5000);
   }
 }
 </script>

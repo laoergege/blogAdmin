@@ -15,23 +15,28 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home/bookslist'
+      redirect: '/home/bookslist',
     },
     {
       path: '/home',
       name: 'home',
-      component: Home,
-      beforeEnter: async (to, from, next) => {
-        if (localStorage.getItem('token')) {
-          let result = await store.dispatch('authToken');
-          if (result)
-            next();
-          else
-            next('/login');
+      beforeEnter: (to, from, next) => {
+        if (store.state.islogin) {
+          next();
+        } else if (localStorage.getItem('token')) {
+          store.dispatch('authToken').then(
+            (result) => {
+              if (result)
+                next();
+              else
+                next('/login');
+            }
+          );
         } else {
-          next('/login');
+          next('/login')
         }
       },
+      component: Home,
       children: [
         {
           path: 'bookslist',
@@ -49,8 +54,8 @@ export default new Router({
             right: Editor
           },
           children: [
-            {path: ':article'},
-            {path: 'all'}
+            { path: ':article' },
+            { path: 'all' }
           ]
         }
       ]
@@ -61,6 +66,6 @@ export default new Router({
       component: Login
     },
     { path: 'error', name: 'error', component: Err },
-    { path: '*',  alias: '/404', component: NotFound }
+    { path: '*', alias: '/404', component: NotFound }
   ]
 })
