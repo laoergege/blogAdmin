@@ -79,10 +79,7 @@ export default {
     }
   },
   created() {
-    // this.getbooks();
-    setTimeout(() => {
-      this.getbooks();
-    }, 5000);
+    this.getbooks();
   }
 }
 </script>

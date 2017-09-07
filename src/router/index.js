@@ -54,8 +54,8 @@ export default new Router({
             right: Editor
           },
           children: [
-            { path: ':article' },
-            { path: 'all' }
+            { path: 'all' },
+            { path: ':article' }
           ]
         }
       ]

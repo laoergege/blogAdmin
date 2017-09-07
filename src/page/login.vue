@@ -5,16 +5,14 @@
             <mu-paper class="login-paper" :zDepth="2">
                 <mu-avatar :src="avatar" :size="96" />
                 <br/>
-                <form novalidate>
-                    <mu-text-field name="name" hintText="username" :required="true" icon="person" v-model.trim="name.value" :errorText="nameErr" @blur="onBlur($data.name)" />
-                    <br/>
-                    <mu-text-field name="pass" type="password" :required="true" hintText="password" icon="vpn_key" v-model.trim="pass.value" :errorText="passErr" @blur="onBlur($data.pass)" />
-                    <br/>
-                    <div>
-                        <mu-flat-button label="forget password?" color="#bdbdbd" />
-                        <mu-raised-button label="login" primary @click="login" />
-                    </div>
-                </form>
+                <mu-text-field name="name" hintText="username" :required="true" icon="person" v-model.trim="name.value" :errorText="nameErr" @blur="onBlur($data.name)" />
+                <br/>
+                <mu-text-field name="pass" type="password" :required="true" hintText="password" icon="vpn_key" v-model.trim="pass.value" :errorText="passErr" @blur="onBlur($data.pass)" />
+                <br/>
+                <div>
+                    <mu-flat-button label="forget password?" color="#bdbdbd" />
+                    <mu-raised-button label="login" type="button" primary @click="login" />
+                </div>
             </mu-paper>
         </div>
     </div>
@@ -78,12 +76,11 @@ export default {
             }
         },
         onBlur(filed) {
-            console.log(1)
             filed.touched = true;
         },
         reset() {
-            this.name = { value: '', touched: false };
-            this.pass = { value: '', touched: false };
+            this.name = { value: '', touched: false, valid: false },
+                this.pass = { value: '', touched: false, valid: false }
         }
     }
 }

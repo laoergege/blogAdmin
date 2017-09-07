@@ -174,7 +174,6 @@ export default {
         this.$store.commit(LIST_TITLE, this.$route.params.book);
 
         if (this.book.length == 0) {
-            (1)
             await this.getArticles(this.$route.params.book)
         }
     },
