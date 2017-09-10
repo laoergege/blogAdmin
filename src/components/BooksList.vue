@@ -117,7 +117,7 @@ export default {
             )
         },
         goBook(book) {
-            this.$router.push(book.bookname);
+            this.$router.push({path: `/home/${book.bookname}`});
         }
     },
     created() {

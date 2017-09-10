@@ -12,7 +12,7 @@ import router from '../router';
     */
 const getBooks = async ({ commit, state }) => {
     try {
-        let res = await _http.get(config.markboos);
+        let res = await _http().get(config.markboos);
 
         let books = res.data.data;
 
@@ -39,7 +39,7 @@ export default {
 
     async login({ commit, state }, host) {
         try {
-            let response = await _http.post('/auth', {
+            let response = await _http().post('/auth', {
                 name: host.name,
                 pass: host.pass
             });
@@ -62,7 +62,7 @@ export default {
 
     async authToken({ commit, state }) {
         try {
-            let response = await _http.get('/auth/token');
+            let response = await _http().get('/auth/token');
 
             if (response.status == 200) {
 
@@ -81,7 +81,7 @@ export default {
      */
     async addBook({ commit, state }, title) {
         try {
-            let response = await _http.post(config.markboos, {
+            let response = await _http().post(config.markboos, {
                 bookname: title
             });
 
@@ -102,7 +102,7 @@ export default {
      */
     async modifyBook({ commit, state }, book) {
         try {
-            let response = await _http.put(config.markboos, {
+            let response = await _http().put(config.markboos, {
                 book: book
             });
 
@@ -123,7 +123,7 @@ export default {
      */
     async deleteBook({ commit, state }, bookID) {
         try {
-            let response = await _http.delete(`${config.markboos}/${bookID}`)
+            let response = await _http().delete(`${config.markboos}/${bookID}`)
 
             if (response.status == 200) {
                 commit(DELETE_BOOK, bookID);
@@ -145,15 +145,15 @@ export default {
         //     await getBooks({ commit, state });
 
         try {
-        //     let bookID = '';
-        //     for ({ _id, bookname } of state.markbooks) {
-        //         if (bn == bookname) {
-        //             bookID = _id;
-        //             break;
-        //         }
-        //     }
+            let bookID = '';
+            for ({ _id, bookname } of state.markbooks) {
+                if (bn == bookname) {
+                    bookID = _id;
+                    break;
+                }
+            }
 
-            let response = await _http.get(`${config.markboos}/${bookID}`);
+            let response = await _http().get(`${config.markboos}/${bookID}`);
 
             if (response.status == 200) {
                 for(let posts of response.data.data){
@@ -162,7 +162,6 @@ export default {
                 return true;
             }
         } catch (error) {
-            (error);
             router.push({ name: 'error' });
         }
     }

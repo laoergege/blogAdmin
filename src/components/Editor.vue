@@ -76,7 +76,7 @@ export default {
             this.currentPosts.wordCount = this.value.length;
             this.currentPosts.content = this.value;
 
-            _http.post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+            _http().post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                 .then(
                 () => { alert('发布更新成功') },
                 () => { this.$router.push({ name: 'error' }) }
@@ -87,7 +87,7 @@ export default {
                 this.currentPosts.wordCount = this.value.length;
                 this.currentPosts.content = this.value;
 
-                _http.put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                _http().put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
                     .then(
                     () => { },
                     () => { this.$router.push({ name: 'error' }) }
@@ -119,7 +119,7 @@ export default {
 
                 this.value = `${start}\n![image.png](image uploading......)\n${end}`;
 
-                _http.post('/upload/images', formdata).then(
+                _http().post('/upload/images', formdata).then(
                     (res) => { this.value = `${start}\n![image.png](${config.APIADDR}/${res.data.data[0]})\n${end}`; },
                     (error) => { this.$router.push({ name: 'error' }) }
                 )

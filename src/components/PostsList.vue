@@ -128,7 +128,7 @@ export default {
         onSubmitForNew() {
 
             if (!this.errorText) {
-                _http.post(`/markbooks/${this.current_book}`, this.currentPosts)
+                _http().post(`/markbooks/${this.current_book}`, this.currentPosts)
                     .then(
                     (res) => {
                         this.$store.commit(ADD_POSTS, { bookname: this.$route.params.book, posts: res.data.data });
@@ -140,7 +140,7 @@ export default {
         },
         onSubmitForRemove() {
             if (!this.errorText) {
-                _http.delete(`/markbooks/${this.$route.params.book}/${this.target.filename}`)
+                _http().delete(`/markbooks/${this.$route.params.book}/${this.target.filename}`)
                     .then(
                     (res) => {
                         this.$store.commit(DELETE_POSTS, { bookname: this.$route.params.book, index: this.index });
@@ -153,7 +153,7 @@ export default {
         onSubmitFORname() {
 
             if (!this.errorText) {
-                _http.put(`/markbooks/${this.$route.params.book}/${this.target.filename}/title`, this.currentPosts)
+                _http().put(`/markbooks/${this.$route.params.book}/${this.target.filename}/title`, this.currentPosts)
                     .then(
                     (res) => {
                         this.book[this.index] = this.target
@@ -167,14 +167,15 @@ export default {
     watch: {
         async '$route'() {
             if (this.book.length == 0)
-                await this.getArticles(this.$route.params.book)
+                await this.$store.dispatch('getArticles', this.$route.params.book)
         }
     },
     async created() {
         this.$store.commit(LIST_TITLE, this.$route.params.book);
 
         if (this.book.length == 0) {
-            await this.getArticles(this.$route.params.book)
+            // await this.getArticles(this.$route.params.book)
+            await this.$store.dispatch('getArticles', this.$route.params.book)
         }
     },
     store

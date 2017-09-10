@@ -35,7 +35,6 @@ export default {
         nameErr() {
             if (this.name.touched) {
                 if (this.name.value.trim().length != 0) {
-                    this.name.valid = true;
                     return ''
                 } else {
                     return '用户名不能为空';
@@ -47,7 +46,6 @@ export default {
         passErr() {
             if (this.pass.touched) {
                 if (this.pass.value.trim().length != 0) {
-                    this.pass.valid = true;
                     return ''
                 } else {
                     return '密码不能为空';
@@ -79,8 +77,22 @@ export default {
             filed.touched = true;
         },
         reset() {
-            this.name = { value: '', touched: false, valid: false },
-                this.pass = { value: '', touched: false, valid: false }
+            this.name = { value: '', touched: false, valid: false };
+            this.pass = { value: '', touched: false, valid: false };
+        }
+    },
+    watch: {
+        'name.value': function(val) {
+            if (val.trim().length != 0)
+                this.name.valid = true;
+            else
+                this.name.valid = false; 
+        },
+        'pass.value': function(val) {
+            if (val.trim().length != 0) 
+                this.pass.valid = true;
+            else
+                this.name.valid = false;
         }
     }
 }

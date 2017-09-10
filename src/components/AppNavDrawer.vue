@@ -78,8 +78,8 @@ export default {
       this.$router.push({ path: `/home/${bookname}/all` })
     }
   },
-  created() {
-    this.getbooks();
+  async created() {
+    await this.getbooks();
   }
 }
 </script>
