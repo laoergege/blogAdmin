@@ -2,12 +2,9 @@
     <div class="container" :style="{'flex-direction':  device_type == 0 ? 'column' : 'row'}">
         <div class="editor-area">
             <div class="toolbar">
-                <div style="margin: 0 auto 0 0;">
-                    <mu-icon-button tooltip="图片拖动到编辑区自动上传" icon="image" />
-                    <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
-                    <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
-                </div>
-
+                <mu-icon-button tooltip="图片拖动到编辑区自动上传" icon="image" />
+                <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
+                <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
                 <mu-icon-button tooltip="保存" icon="save" @click="save" />
                 <mu-icon-button tooltip="分屏预览" icon="flip" @click="togglePreview" :class="{isActived: preview}" />
                 <mu-icon-button tooltip="全屏写作" icon="fullscreen" @click="toggleFullScr" :class="{isActived: fullscreen}" />
@@ -34,7 +31,7 @@
 import store from '../store/store';
 import { mapState, mapActions } from 'vuex';
 import {
-    PREVIEW
+    PREVIEW, CHANGE_MAIN_TITLE
 } from '../store/mutation-types';
 import { debounceTime, testImg } from '../util/util.js';
 import axios from 'axios';
@@ -87,15 +84,11 @@ export default {
                 this.currentPosts.wordCount = this.value.length;
                 this.currentPosts.content = this.value;
 
-                _http().put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
-                    .then(
-                    () => { },
-                    () => { this.$router.push({ name: 'error' }) }
-                    )
+            return  _http().put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
             }
         },
         autosave() {
-            this.save();
+            return this.save();
         },
         onDragover() {
             this.dragover = true;
@@ -127,6 +120,11 @@ export default {
         },
         getContent() {
             if (this.currentPosts) {
+                // 本地存储文章记录 
+                localStorage.setItem('currentPosts', JSON.stringify(this.currentPosts));
+                
+                this.$store.commit(CHANGE_MAIN_TITLE, this.currentPosts.title);
+
                 axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
                     baseURL: config.APIADDR,
                     responseType: 'text'
@@ -135,10 +133,13 @@ export default {
                      * 本地存储 与 远程存储 比较版本
                      */
                     let local = localStorage.getItem(this.currentPosts._id);
-                    if (res.data.length >= (local ? local.length : 0))
+                    if (res.data.length == (local ? local.length : 0)){
                         this.value = res.data;
+                    }
                     else {
                         this.value = localStorage.getItem(this.currentPosts._id);
+                        // 更新 远程存储 版本
+                        this.save();
                     }
                 });
             }
@@ -166,9 +167,7 @@ export default {
             // 本地存储
             localStorage.setItem(this.currentPosts._id, this.value);
         },
-        "$route"() {
-            // 切换文章时， 自动保存
-            this.autosave();
+        async "$route"() {
             // 请求 新的文章内容
             this.getContent();
             // 清楚 储存的操作状态
@@ -179,9 +178,12 @@ export default {
         html() {
             return this.converter.makeHtml(this.value);
         },
-        ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts']),
+        ...mapState(['preview', 'fullscreen', 'device_type']),
         ...mapState({
-            book: function(state) { return state.books[this.$route.params.book] || [] }
+            book: function(state) { return state.books[this.$route.params.book] || [] },
+            currentPosts: function (state) {
+                return state.currentPosts || JSON.parse(localStorage.getItem('currentPosts'));
+            }
         })
     },
     created() {
@@ -189,9 +191,6 @@ export default {
         this.undoManager.clear();
         // 获取 文章 内容
         this.getContent();
-
-        // 当用户离开或刷新页面时自动保存编辑内容
-        window.addEventListener("beforeunload", this.onRefresh)
     },
     updated() {
         if (this.preview) {
@@ -202,16 +201,6 @@ export default {
             });
         }
     },
-    beforeDestroy() {
-        window.removeEventListener("beforeunload", this.onRefresh);
-    },
-    /******* 监听 该编辑器组件的路由变化 自动保存编辑内容   **/
-    beforeRouteLeave() {
-        // 切换文章时， 自动保存
-        this.autosave();
-        // 请求 新的文章内容
-        this.getContent();
-    },
     store
 }
 
@@ -221,8 +210,6 @@ export default {
 .container {
     height: 100%;
     display: flex;
-    /* flex-wrap: wrap; */
-    /* flex-direction: column */
 }
 
 .editor-area {
