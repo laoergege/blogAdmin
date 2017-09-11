@@ -32,7 +32,7 @@
 import Host from './Host';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import {
-  TOGGLE_DRAWER, LIST_TITLE
+  TOGGLE_DRAWER, LIST_TITLE, CHANGE_MAIN_TITLE
 } from '../store/mutation-types';
 import _http from "../util/http"
 import config from "../config"
@@ -81,7 +81,8 @@ export default {
       this.changeTitle("所有文集");
 
       this.$router.push({ path: `/home/bookslist` })
-      // this.$router.push({name: 'bookslist'});
+     
+      this.$store.commit(CHANGE_MAIN_TITLE, '')
     }
   },
   async created() {
