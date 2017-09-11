@@ -141,10 +141,12 @@ export default {
      * @param {*} bookname 
      */
     async getArticles({ commit, state }, bn) {
-        // if (state.markbooks.length == 0)
-        //     await getBooks({ commit, state });
-
         try {
+
+            if(state.markbooks.length == 0){
+                await getBooks({commit, state});
+            }
+
             let bookID = '';
             for ({ _id, bookname } of state.markbooks) {
                 if (bn == bookname) {
@@ -162,6 +164,7 @@ export default {
                 return true;
             }
         } catch (error) {
+            console.log(error)
             router.push({ name: 'error' });
         }
     }

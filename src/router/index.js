@@ -46,6 +46,7 @@ export default new Router({
             right: null
           }
         },
+       
         {
           path: ':book',
           name: 'editor',
@@ -58,6 +59,7 @@ export default new Router({
             { path: ':article' }
           ]
         }
+
       ]
     },
     {

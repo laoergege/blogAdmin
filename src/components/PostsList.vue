@@ -64,7 +64,7 @@ export default {
     },
     computed: {
         ...mapState({
-            book: function(state) { return state.books[this.$route.params.book] },
+            book: function(state) { return state.books[this.$route.params.book] || [] },
             "device_type": "device_type",
             currentPosts: "currentPosts",
             "current_book": (state) => {
@@ -174,7 +174,7 @@ export default {
         this.$store.commit(LIST_TITLE, this.$route.params.book);
 
         if (this.book.length == 0) {
-            // await this.getArticles(this.$route.params.book)
+            console.log(1)
             await this.$store.dispatch('getArticles', this.$route.params.book)
         }
     },

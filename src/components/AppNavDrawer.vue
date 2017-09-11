@@ -10,8 +10,8 @@
         </mu-list-item>
         <mu-list-item title="文集" toggleNested :open="false">
           <mu-icon slot="left" value="collections_bookmark" />
-          <mu-list-item slot="nested" title="新建文集" @click="$router.push({name: 'bookslist'})">
-            <mu-icon slot="left" value="add" />
+          <mu-list-item slot="nested" title="所有文集" @click="goAllBook">
+            <mu-icon slot="left" value="collections_bookmark" />
           </mu-list-item>
           <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="goBook(book.bookname)">
             <mu-icon slot="left" value="book" />
@@ -76,6 +76,12 @@ export default {
       this.changeTitle(bookname);
 
       this.$router.push({ path: `/home/${bookname}/all` })
+    },
+    goAllBook() {
+      this.changeTitle("所有文集");
+
+      this.$router.push({ path: `/home/bookslist` })
+      // this.$router.push({name: 'bookslist'});
     }
   },
   async created() {

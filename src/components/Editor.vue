@@ -134,7 +134,8 @@ export default {
                     /**
                      * 本地存储 与 远程存储 比较版本
                      */
-                    if (res.data == localStorage.getItem(this.currentPosts._id))
+                    let local = localStorage.getItem(this.currentPosts._id);
+                    if (res.data.length >= (local ? local.length : 0))
                         this.value = res.data;
                     else {
                         this.value = localStorage.getItem(this.currentPosts._id);
@@ -149,7 +150,7 @@ export default {
     watch: {
         value: function(val, oldVal) {
             (val)
-            if ( (val) && (val.length > this.flag.length)) {
+            if ((val) && (val.length > this.flag.length)) {
                 this.flag = val;
                 this.undoManager.add({
                     undo: () => {
@@ -159,7 +160,7 @@ export default {
                         this.value = val;
                     }
                 });
-            }else{
+            } else {
                 val = ''
             }
             // 本地存储
@@ -178,10 +179,13 @@ export default {
         html() {
             return this.converter.makeHtml(this.value);
         },
-        ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts'])
+        ...mapState(['preview', 'fullscreen', 'device_type', 'currentPosts']),
+        ...mapState({
+            book: function(state) { return state.books[this.$route.params.book] || [] }
+        })
     },
     created() {
-         // 清楚 储存的操作状态
+        // 清楚 储存的操作状态
         this.undoManager.clear();
         // 获取 文章 内容
         this.getContent();
