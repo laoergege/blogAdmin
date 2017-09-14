@@ -133,7 +133,7 @@ export default {
                      * 本地存储 与 远程存储 比较版本
                      */
                     let local = localStorage.getItem(this.currentPosts._id);
-                    if (res.data.length == (local ? local.length : 0)){
+                    if (!local){
                         this.value = res.data;
                     }
                     else {
@@ -168,6 +168,10 @@ export default {
             localStorage.setItem(this.currentPosts._id, this.value);
         },
         async "$route"() {
+            // 预览内容 和 编辑区 置顶
+            this.$refs.textarea.scrollTop = 0;
+            this.$refs.preview.scrollTop = 0;
+
             // 请求 新的文章内容
             this.getContent();
             // 清楚 储存的操作状态
