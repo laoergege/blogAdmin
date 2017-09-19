@@ -20,7 +20,7 @@ export const ISLOGIN = 'islogin';
 // host 信息
 export const HOST_INFO = 'host_info';
 
-// 文集 和 文章 state 相关操作
+ // 文集 文章
 // 初始文集
 export const INIT_BOOKS = 'init_books';
 //添加文集
@@ -37,6 +37,10 @@ export const INIT_POSTS = 'init_POST';
 export const MODIFY_POSTS = "modify_posts";
 // 删除 文集中的文章
 export const DELETE_POSTS = 'delete_posts';
+// 添加标签
+export const ADD_TAG = "add_tag";
+// 删除标签
+export const REMOVE_TAG = "remove_tag";
 
 //main
 //改变 main title

@@ -1,4 +1,4 @@
 module.exports = {
   NODE_ENV: '"production"',
-  API_ROOT: "'http://www.laoergege.cn'"
+  API_ROOT: "'https://api.laoergege.cn'"
 }

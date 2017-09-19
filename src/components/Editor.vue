@@ -2,6 +2,7 @@
     <div class="container" :style="{'flex-direction':  device_type == 0 ? 'column' : 'row'}">
         <div class="editor-area">
             <div class="toolbar">
+                <mu-icon-button tooltip="添加标签" icon="local_offer" @click="addTag"/>
                 <mu-icon-button tooltip="图片拖动到编辑区自动上传" icon="image" />
                 <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
                 <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
@@ -31,7 +32,7 @@
 import store from '../store/store';
 import { mapState, mapActions } from 'vuex';
 import {
-    PREVIEW, CHANGE_MAIN_TITLE
+    PREVIEW, CHANGE_MAIN_TITLE, INIT_POSTS
 } from '../store/mutation-types';
 import { debounceTime, testImg } from '../util/util.js';
 import axios from 'axios';
@@ -146,6 +147,10 @@ export default {
         },
         onRefresh() {
             this.autosave();
+        },
+        addTag() {
+            if(this.currentPosts)
+                this.$router.push({name: 'tags', params: {article: this.currentPosts.title}});
         }
     },
     watch: {
@@ -168,9 +173,6 @@ export default {
             localStorage.setItem(this.currentPosts._id, this.value);
         },
         async "$route"() {
-            // 预览内容 和 编辑区 置顶
-            this.$refs.textarea.scrollTop = 0;
-            this.$refs.preview.scrollTop = 0;
 
             // 请求 新的文章内容
             this.getContent();
@@ -186,7 +188,9 @@ export default {
         ...mapState({
             book: function(state) { return state.books[this.$route.params.book] || [] },
             currentPosts: function (state) {
-                return state.currentPosts || JSON.parse(localStorage.getItem('currentPosts'));
+                let currentPosts = state.currentPosts || JSON.parse(localStorage.getItem('currentPosts'));
+                this.$store.commit(INIT_POSTS, currentPosts);
+                return currentPosts;
             }
         })
     },

@@ -1,6 +1,6 @@
 import {
     TOGGLE_DRAWER, PREVIEW, FULLSCREEN, HOST_INFO, INIT_BOOKS,
-    ADD_BOOK, MODIFY_BOOK, DELETE_BOOK, ADD_POSTS
+    ADD_BOOK, MODIFY_BOOK, DELETE_BOOK, ADD_POSTS, ADD_TAG, REMOVE_TAG
 } from '../store/mutation-types';
 import _http from '../util/http';
 import config from '../config';
@@ -111,7 +111,7 @@ export default {
                 return true;
             }
         } catch (error) {
-            (error);
+            console.log(error);
             router.push({ name: 'error' });
         }
     },
@@ -130,13 +130,12 @@ export default {
                 return true;
             }
         } catch (error) {
-            (error);
             router.push({ name: 'error' });
         }
     },
 
     /**
-     * 获取文集所有文章
+     * 获取该文集中所有文章
      * @param {*} param0 
      * @param {*} bookname 
      */
@@ -164,7 +163,44 @@ export default {
                 return true;
             }
         } catch (error) {
-            console.log(error)
+            router.push({ name: 'error' });
+        }
+    },
+
+    /**
+     * 添加标签
+     * @param {*} param0 
+     * @param {*} bn 
+     */
+    async addTag({ commit, state }, {book, articleID, tag}) {
+        try {
+            let response = await _http().put(`/markbooks/${book}/${articleID}/tags/${tag}`);
+
+            if (response.status == 200) {
+                commit(ADD_TAG, tag);
+            }
+
+            return true;
+        } catch (error) {
+            router.push({ name: 'error' });
+        }
+    },
+
+    /**
+     * 删除标签
+     * @param {*} param0 
+     * @param {*} bn 
+     */
+    async removeTag({ commit, state }, {book, articleID, tag, index}) {
+        try {
+            let response = await _http().delete(`/markbooks/${book}/${articleID}/tags/${tag}`);
+
+            if (response.status == 200) {
+                commit(REMOVE_TAG, index);
+            }
+
+            return true;
+        } catch (error) {
             router.push({ name: 'error' });
         }
     }

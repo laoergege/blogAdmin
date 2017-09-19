@@ -22,7 +22,7 @@ export default {
     // 全屏
     fullscreen: false,
 
-    // 文集 文章相关 state
+    // 文集 文章
     markbooks: [],
     books: {},
     currentPosts: null,

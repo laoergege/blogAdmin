@@ -21,7 +21,7 @@
         </mu-dialog>
 
         <mu-dialog :open="dialogFORdel" title="删除文章" @close="close" bodyClass="warning">
-            <h3>你确定删除 {{target.title}} 文集以及该文集的所有文章?</h3>
+            <h3>你确定删除 {{target.title}} 文章?</h3>
             <mu-flat-button slot="actions" @click="close" primary label="取消" />
             <mu-flat-button slot="actions" primary @click="onSubmitForRemove" label="确定" />
         </mu-dialog>
@@ -93,7 +93,7 @@ export default {
             this.target = t;
             this.index = 10000;
             this.errorText = '';
-            this.$store.commit(INIT_POSTS, null);
+            // this.$store.commit(INIT_POSTS, null);
         },
         onDialogFORnew() {
             this.dialogFORnew = true;
@@ -104,7 +104,8 @@ export default {
                 release: false,
                 bookID: this.current_book,
                 content: '',
-                create_at: Date.now()
+                create_at: Date.now(),
+                "tags": []
             }
 
             this.$store.commit(INIT_POSTS, newposts);
@@ -156,7 +157,7 @@ export default {
                 _http().put(`/markbooks/${this.$route.params.book}/${this.target.filename}/title`, this.currentPosts)
                     .then(
                     (res) => {
-                        this.book[this.index] = this.target
+                        this.$router.replace({ path: `/home/${this.$route.params.book}/${this.currentPosts.title}` });
                         this.close();
                     },
                     () => { this.$router.push({ name: 'error' }) }

@@ -1,8 +1,8 @@
 /*
-*global css
+* global css
 */
 .titleClass {
-    text-align: center;
+    text-align: center!important;
 }
 
 .mu-avatar img {

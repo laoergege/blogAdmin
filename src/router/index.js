@@ -8,6 +8,7 @@ import store from '../store/store';
 import Err from '@/page/error';
 import BooksList from '@/components/BooksList';
 import PostsList from '@/components/PostsList';
+import Tags from '@/components/Tags'
 
 Vue.use(Router)
 
@@ -43,7 +44,16 @@ export default new Router({
           name: 'bookslist',
           components: {
             left: BooksList,
-            right: null
+            right: Editor
+          }
+        },
+
+        {
+          path: ':article/tags',
+          name: 'tags',
+          components: {
+            left: Tags,
+            right: Editor
           }
         },
        

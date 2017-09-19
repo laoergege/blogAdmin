@@ -4,11 +4,7 @@
       <lys-host/>
 
       <mu-list>
-        <mu-list-item title="消息" @click.native="changeTitle('消息')">
-          <mu-icon slot="left" value="notifications" />
-          <mu-badge content="4" secondary slot="after" />
-        </mu-list-item>
-        <mu-list-item title="文集" toggleNested :open="false">
+        <mu-list-item title="文集" toggleNested :open="true">
           <mu-icon slot="left" value="collections_bookmark" />
           <mu-list-item slot="nested" title="所有文集" @click="goAllBook">
             <mu-icon slot="left" value="collections_bookmark" />
@@ -16,9 +12,6 @@
           <mu-list-item slot="nested" :title="book.bookname" v-for="(book, index) in markbooks" :key="index" @click.native="goBook(book.bookname)">
             <mu-icon slot="left" value="book" />
           </mu-list-item>
-        </mu-list-item>
-        <mu-list-item title="标签" @click.native="changeTitle('标签')">
-          <mu-icon slot="left" value="local_offer" />
         </mu-list-item>
         <mu-list-item title="个人设置" @click.native="changeTitle('个人设置')">
           <mu-icon slot="left" value="account_circle" />
