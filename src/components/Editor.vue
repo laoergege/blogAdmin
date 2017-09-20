@@ -2,7 +2,7 @@
     <div class="container" :style="{'flex-direction':  device_type == 0 ? 'column' : 'row'}">
         <div class="editor-area">
             <div class="toolbar">
-                <mu-icon-button tooltip="添加标签" icon="local_offer" @click="addTag"/>
+                <mu-icon-button tooltip="添加标签" icon="local_offer" @click="addTag" />
                 <mu-icon-button tooltip="图片拖动到编辑区自动上传" icon="image" />
                 <mu-icon-button tooltip="撤销" icon="rotate_left" @click="undo" />
                 <mu-icon-button tooltip="恢复" icon="rotate_right" @click="redo" />
@@ -14,7 +14,7 @@
             <div class="body" :class="{dragover: dragover}" ref="dropzone" @dragover.prevent.stop="onDragover" @dragleave.prevent.stop="onDragleave" @dragenter.prevent.stop="onDragleave" @drop.prevent.stop="onDrop($event)">
                 <mu-content-block>
 
-                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.prevent.stop.ctrl.90="undo" @keyup.prevent.stop.ctrl.89="redo"></textarea>
+                    <textarea id="editor" spellcheck="false" v-model="value" ref="textarea" @keyup.prevent.stop.ctrl.90="undo" @keyup.prevent.stop.ctrl.89="redo" :disabled="currentPosts?false:true"></textarea>
                     <input hidden type="file" name="file" id="file" />
 
                 </mu-content-block>
@@ -64,66 +64,75 @@ export default {
             toggleFullScr: 'fullscreen'
         }),
         undo() {
-            this.undoManager.undo();
+            if (this.currentPosts)
+                this.undoManager.undo();
         },
         redo() {
-            this.undoManager.redo();
+            if (this.currentPosts)
+                this.undoManager.redo();
         },
         release() {
-            this.currentPosts.release = true;
-            this.currentPosts.wordCount = this.value.length;
-            this.currentPosts.content = this.value;
+            if (this.currentPosts) {
+                this.currentPosts.release = true;
+                this.currentPosts.wordCount = this.value.length;
+                this.currentPosts.content = this.value;
 
-            _http().post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
-                .then(
-                () => { alert('发布更新成功') },
-                () => { this.$router.push({ name: 'error' }) }
-                )
+                _http().post(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                    .then(
+                    () => { alert('发布更新成功') },
+                    () => { this.$router.push({ name: 'error' }) }
+                    )
+            }
         },
         save() {
             if (this.currentPosts && this.value) {
                 this.currentPosts.wordCount = this.value.length;
                 this.currentPosts.content = this.value;
 
-            return  _http().put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
+                return _http().put(`${config.markboos}/${this.$route.params.book}/${this.currentPosts.filename}`, this.currentPosts)
             }
         },
         autosave() {
             return this.save();
         },
         onDragover() {
-            this.dragover = true;
+            if (this.currentPosts)
+                this.dragover = true;
         },
         onDragleave() {
-            this.dragover = false;
+            if (this.currentPosts)
+                this.dragover = false;
         },
         onDrop(e) {
-            this.dragover = false;
+            if (this.currentPosts) {
+                this.dragover = false;
 
-            let file = e.dataTransfer.files[0];
+                let file = e.dataTransfer.files[0];
 
-            if (testImg(file)) {
-                let formdata = new FormData();
-                formdata.append('image', file);
+                if (testImg(file)) {
+                    let formdata = new FormData();
+                    formdata.append('image', file);
 
-                let selectionStart = this.$refs.textarea.selectionStart;
+                    let selectionStart = this.$refs.textarea.selectionStart;
 
-                let start = this.value.substr(0, selectionStart);
-                let end = this.value.substr(selectionStart);
+                    let start = this.value.substr(0, selectionStart);
+                    let end = this.value.substr(selectionStart);
 
-                this.value = `${start}\n![image.png](image uploading......)\n${end}`;
+                    this.value = `${start}\n![image.png](image uploading......)\n${end}`;
 
-                _http().post('/upload/images', formdata).then(
-                    (res) => { this.value = `${start}\n![image.png](${config.APIADDR}/${res.data.data[0]})\n${end}`; },
-                    (error) => { this.$router.push({ name: 'error' }) }
-                )
+                    _http().post('/upload/images', formdata).then(
+                        (res) => { this.value = `${start}\n![image.png](${config.APIADDR}/${res.data.data[0]})\n${end}`; },
+                        (error) => { this.$router.push({ name: 'error' }) }
+                    )
+                }
             }
+
         },
         getContent() {
             if (this.currentPosts) {
                 // 本地存储文章记录 
                 localStorage.setItem('currentPosts', JSON.stringify(this.currentPosts));
-                
+
                 this.$store.commit(CHANGE_MAIN_TITLE, this.currentPosts.title);
 
                 axios.get(`${this.currentPosts.directory}/${this.currentPosts.filename}.save.md`, {
@@ -134,7 +143,7 @@ export default {
                      * 本地存储 与 远程存储 比较版本
                      */
                     let local = localStorage.getItem(this.currentPosts._id);
-                    if (!local){
+                    if (!local) {
                         this.value = res.data;
                     }
                     else {
@@ -146,11 +155,12 @@ export default {
             }
         },
         onRefresh() {
-            this.autosave();
+            if (this.currentPosts)
+                this.autosave();
         },
         addTag() {
-            if(this.currentPosts)
-                this.$router.push({name: 'tags', params: {article: this.currentPosts.title}});
+            if (this.currentPosts)
+                this.$router.push({ name: 'tags', params: { article: this.currentPosts.title } });
         }
     },
     watch: {
@@ -178,6 +188,11 @@ export default {
             this.getContent();
             // 清楚 储存的操作状态
             this.undoManager.clear();
+        },
+        currentPosts() {
+            if (!this.currentPosts) {
+                this.value = '';
+            }
         }
     },
     computed: {
@@ -187,9 +202,9 @@ export default {
         ...mapState(['preview', 'fullscreen', 'device_type']),
         ...mapState({
             book: function(state) { return state.books[this.$route.params.book] || [] },
-            currentPosts: function (state) {
+            currentPosts: function(state) {
                 let currentPosts = state.currentPosts || JSON.parse(localStorage.getItem('currentPosts'));
-                this.$store.commit(INIT_POSTS, currentPosts);
+                // this.$store.commit(INIT_POSTS, currentPosts);
                 return currentPosts;
             }
         })

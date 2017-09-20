@@ -2,7 +2,7 @@ import {
     TOGGLE_DRAWER, CHANGE_TYPE, TOGGLE_LIST, PREVIEW, FULLSCREEN,
     LIST_TITLE, ISLOGIN, HOST_INFO, INIT_BOOKS, ADD_BOOK, MODIFY_BOOK,
     DELETE_BOOK, CHANGE_MAIN_TITLE, ADD_POSTS, INIT_POSTS, MODIFY_POSTS,
-    DELETE_POSTS, ADD_TAG, REMOVE_TAG
+    DELETE_POSTS, ADD_TAG, REMOVE_TAG, CHANGE_READCOUNT
 } from './mutation-types';
 import Vue from 'vue';
 
@@ -65,13 +65,13 @@ export default {
     [MODIFY_BOOK](state, book) {
         let i;
         state.markbooks.forEach(function (value, index) {
-            if (value._id == book._id){
+            if (value._id == book._id) {
                 i = index;
                 let oldbook = state.books[value.bookname];
                 delete state.books[value.bookname];
                 state.books[book.bookname] = oldbook;
             }
-                
+
         });
         state.markbooks.splice(i, 1, book);
     },
@@ -101,7 +101,7 @@ export default {
     },
     // 删除 文集中的文章
     [DELETE_POSTS](state, { bookname, index }) {
-        if(state.books[bookname][index]._id == state.currentPosts._id){
+        if ((state.currentPosts) && (state.books[bookname][index].title == state.currentPosts.title)) {
             state.currentPosts = null;
             localStorage.removeItem('currentPosts');
             state.mainTitle = '';
@@ -118,7 +118,11 @@ export default {
     [REMOVE_TAG](state, index) {
         state.currentPosts.tags.splice(index, 1);
     },
-    
+    // 修改文章阅读量
+    [CHANGE_READCOUNT](state, { bookname, index, count }) {
+        state.books[bookname][index].readCount = count
+    },
+
     // mian
     // change title
     [CHANGE_MAIN_TITLE](state, title) {

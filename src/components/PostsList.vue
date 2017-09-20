@@ -9,6 +9,7 @@
                 <mu-icon-menu slot="right" icon="more_vert" @click.native="$event.stopPropagation()">
                     <mu-menu-item title="删除文章" @click="(target = post) && (dialogFORdel = true) && (index = i)" />
                     <mu-menu-item title="修改名称" @click="onDialogFORModify(post, i)" />
+                    <mu-menu-item title="置顶" @click.stop="topArticle(post, i)" />
                 </mu-icon-menu>
             </mu-list-item>
         </mu-list>
@@ -45,6 +46,7 @@ import store from '../store/store';
 import _http from '../util/http';
 import config from '../config';
 import { current_book } from '../util/util'
+const _ = require('lodash/function');
 
 const t = {
     title: ''
@@ -70,10 +72,18 @@ export default {
             "current_book": (state) => {
                 return current_book(state);
             },
-            books: "books"
+            books: "books",
+            mainTitle: 'mainTitle'
         })
     },
     methods: {
+        topArticle(post, i) {
+            this.$store.dispatch('topArticle', {
+                book: post.directory.split('/')[2],
+                articleID: post._id,
+                index: i
+            })
+        },
         ...mapActions({
             getArticles: 'getArticles'
         }),
@@ -98,7 +108,7 @@ export default {
         onDialogFORnew() {
             this.dialogFORnew = true;
 
-             let newposts = {
+            let newposts = {
                 title: '',
                 directory: `/books/${this.$route.params.book}`,
                 release: false,
@@ -122,7 +132,7 @@ export default {
                 this.errorText = '不能为空';
             else {
                 this.errorText = '';
-                if(this.currentPosts)
+                if (this.currentPosts)
                     this.$store.commit(MODIFY_POSTS, { key: 'title', value: value })
             }
         },
@@ -138,6 +148,9 @@ export default {
                     () => { this.$router.push({ name: 'error' }) }
                     )
             }
+
+            this.$store.commit(CHANGE_MAIN_TITLE, this.currentPosts.title)
+
         },
         onSubmitForRemove() {
             if (!this.errorText) {

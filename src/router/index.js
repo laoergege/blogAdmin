@@ -44,7 +44,7 @@ export default new Router({
           name: 'bookslist',
           components: {
             left: BooksList,
-            right: Editor
+            right: null
           }
         },
 

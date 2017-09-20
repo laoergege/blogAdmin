@@ -1,6 +1,7 @@
 import {
     TOGGLE_DRAWER, PREVIEW, FULLSCREEN, HOST_INFO, INIT_BOOKS,
-    ADD_BOOK, MODIFY_BOOK, DELETE_BOOK, ADD_POSTS, ADD_TAG, REMOVE_TAG
+    ADD_BOOK, MODIFY_BOOK, DELETE_BOOK, ADD_POSTS, ADD_TAG, REMOVE_TAG,
+    CHANGE_READCOUNT
 } from '../store/mutation-types';
 import _http from '../util/http';
 import config from '../config';
@@ -45,7 +46,7 @@ export default {
             });
 
             let data = response.data.data;
-        
+
             //保存 token
             localStorage.setItem('token', data.token);
             // 保存 host 信息
@@ -54,7 +55,7 @@ export default {
             state.islogin = true;
 
             return true;
-            
+
         } catch (error) {
             return false;
         }
@@ -142,8 +143,8 @@ export default {
     async getArticles({ commit, state }, bn) {
         try {
 
-            if(state.markbooks.length == 0){
-                await getBooks({commit, state});
+            if (state.markbooks.length == 0) {
+                await getBooks({ commit, state });
             }
 
             let bookID = '';
@@ -157,7 +158,7 @@ export default {
             let response = await _http().get(`${config.markboos}/${bookID}`);
 
             if (response.status == 200) {
-                for(let posts of response.data.data){
+                for (let posts of response.data.data) {
                     commit(ADD_POSTS, { bookname: bookname, posts: posts });
                 }
                 return true;
@@ -172,7 +173,7 @@ export default {
      * @param {*} param0 
      * @param {*} bn 
      */
-    async addTag({ commit, state }, {book, articleID, tag}) {
+    async addTag({ commit, state }, { book, articleID, tag }) {
         try {
             let response = await _http().put(`/markbooks/${book}/${articleID}/tags/${tag}`);
 
@@ -191,7 +192,7 @@ export default {
      * @param {*} param0 
      * @param {*} bn 
      */
-    async removeTag({ commit, state }, {book, articleID, tag, index}) {
+    async removeTag({ commit, state }, { book, articleID, tag, index }) {
         try {
             let response = await _http().delete(`/markbooks/${book}/${articleID}/tags/${tag}`);
 
@@ -201,6 +202,26 @@ export default {
 
             return true;
         } catch (error) {
+            router.push({ name: 'error' });
+        }
+    },
+
+
+    /**
+     * 文章置顶
+     * @param {*} param0 
+     * @param {*} param1 
+     */
+    async topArticle({ commit, state }, { book, articleID, index }) {
+        try {
+            let response = await _http().put(`/markbooks/${book}/${articleID}/readCount/top`);
+
+            if (response.status == 200) {
+                commit(CHANGE_READCOUNT, {bookname: book, index: index, count: response.data.data.readCount});
+            }
+
+        } catch (error) {
+            console.log(error)
             router.push({ name: 'error' });
         }
     }

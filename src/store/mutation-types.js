@@ -41,6 +41,8 @@ export const DELETE_POSTS = 'delete_posts';
 export const ADD_TAG = "add_tag";
 // 删除标签
 export const REMOVE_TAG = "remove_tag";
+// 修改文章阅读量
+export const CHANGE_READCOUNT = "change_readCount"
 
 //main
 //改变 main title
