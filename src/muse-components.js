@@ -15,6 +15,7 @@ import badge from 'muse-components/badge'
 import iconMenu from 'muse-components/iconMenu'
 import {menuItem} from 'muse-components/menu'
 import dialog from 'muse-components/dialog'
+import circularProgress from 'muse-components/circularProgress'
 
 const comps = {
     [appBar.name]: appBar,
@@ -35,7 +36,8 @@ const comps = {
     [badge.name]: badge,
     [iconMenu.name]: iconMenu,
     [menuItem.name]: menuItem,
-    [dialog.name]: dialog
+    [dialog.name]: dialog,
+    [circularProgress.name]: circularProgress
 }
 
 export function registerComps(Vue) {

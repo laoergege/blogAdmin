@@ -165,7 +165,6 @@ export default {
     },
     watch: {
         value: function(val, oldVal) {
-            (val)
             if ((val) && (val.length > this.flag.length)) {
                 this.flag = val;
                 this.undoManager.add({
@@ -180,7 +179,8 @@ export default {
                 val = ''
             }
             // 本地存储
-            localStorage.setItem(this.currentPosts._id, this.value);
+            if(this.currentPosts)
+                localStorage.setItem(this.currentPosts._id, this.value);
         },
         async "$route"() {
 
